@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>GreenGrocer | Premium Organic Market</title>
+    
+    <!-- Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .organic-shape {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .zoom-container:hover img {
+            transform: scale(1.5);
+            cursor: zoom-in;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tap-highlight-transparent { -webkit-tap-highlight-color: transparent; }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up { animation: slideIn 0.5s ease-out forwards; }
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, h4, .font-literata { font-family: 'Literata', serif; }
+    </style>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2d5a27", // Modified to instruction primary color
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f7",
+                        "on-background": "#1a1c1b",
+                        "surface": "#f9f9f7",
+                        "on-surface": "#1a1c1b",
+                        "outline-variant": "#c2c9bb",
+                        "primary-container": "#2d5a27",
+                        "on-primary-container": "#9dd090",
+                        "secondary-container": "#fdbc13",
+                        "on-secondary-container": "#6b4d00",
+                        "surface-container-low": "#f4f4f2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e6",
+                        "surface-container-highest": "#e2e3e1",
+                        "surface-variant": "#e2e3e1",
+                        "on-surface-variant": "#42493e",
+                        "outline": "#72796e",
+                        "tertiary": "#2b3f00",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#bcf0ae",
+                        "primary-fixed-dim": "#a1d494",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "md": "0.375rem", // Standard rounded-md
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "base": "8px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "xl": "80px",
+                        "sm": "12px"
+                    },
+                    fontSize: {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const TopBar = ({ cartCount = 3, hideNav = false }) => {
+            const navigate = useNavigate();
+            return (
+                <header className="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md shadow-[0px_4px_20px_rgba(45,90,39,0.05)]">
+                    <div className="flex items-center justify-between px-4 md:px-margin-desktop py-4 max-w-[1440px] mx-auto">
+                        <div className="flex items-center gap-base cursor-pointer" onClick={() => navigate('/')}>
+                            <span className="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">GreenGrocer</span>
+                        </div>
+                        
+                        {!hideNav && (
+                            <div className="hidden lg:flex items-center gap-md flex-1 max-w-2xl px-xl">
+                                <div className="glass-panel border border-outline-variant/30 rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-surface-variant transition-colors group">
+                                    <span className="material-symbols-outlined text-primary">location_on</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] uppercase tracking-wider font-bold text-outline">Delivery to</span>
+                                        <span className="font-label-lg text-label-lg text-on-surface">Home - 123 Farm Lane</span>
+                                    </div>
+                                    <span className="material-symbols-outlined text-outline group-hover:translate-y-0.5 transition-transform">expand_more</span>
+                                </div>
+                                <div className="flex-1 relative">
+                                    <input className="w-full bg-surface-container-low border-none rounded-full py-3 px-12 focus:ring-2 focus:ring-primary/20 text-body-md" placeholder="Search organic berries, kale, artisan bread..." type="text"/>
+                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-4">
+                            <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors p-2">mic</button>
+                            <Link to="/cart" className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors p-2 relative">
+                                shopping_cart
+                                <span className="absolute top-1 right-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">{cartCount}</span>
+                            </Link>
+                            <Link to="/profile" className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors p-2">account_circle</Link>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const BottomNav = () => {
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+            
+            return (
+                <nav className="fixed bottom-0 w-full lg:hidden z-50 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-lg border-t border-outline-variant/30 shadow-[0px_-4px_20px_rgba(45,90,39,0.05)]">
+                    <div className="flex justify-around items-center px-4 py-2 pb-safe">
+                        <Link to="/" className={`flex flex-col items-center justify-center ${isActive('/') ? 'text-primary' : 'text-on-surface-variant'}`}>
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: isActive('/') ? "'FILL' 1" : "" }}>home</span>
+                            <span className="font-label-sm text-label-sm">Home</span>
+                        </Link>
+                        <Link to="/shop" className={`flex flex-col items-center justify-center ${isActive('/shop') ? 'text-primary' : 'text-on-surface-variant'}`}>
+                            <span className="material-symbols-outlined">grid_view</span>
+                            <span className="font-label-sm text-label-sm">Shop</span>
+                        </Link>
+                        <Link to="/cart" className={`flex flex-col items-center justify-center ${isActive('/cart') ? 'text-primary' : 'text-on-surface-variant'}`}>
+                            <span className="material-symbols-outlined">shopping_basket</span>
+                            <span className="font-label-sm text-label-sm">Cart</span>
+                        </Link>
+                        <Link to="/profile" className={`flex flex-col items-center justify-center ${isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'}`}>
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: isActive('/profile') ? "'FILL' 1" : "" }}>person</span>
+                            <span className="font-label-sm text-label-sm">Profile</span>
+                        </Link>
+                    </div>
+                </nav>
+            );
+        };
+
+        // --- Pages ---
+
+        const RegisterPage = () => {
+            const navigate = useNavigate();
+            return (
+                <main className="min-h-screen flex flex-col md:flex-row">
+                    <section className="hidden md:flex md:w-2/5 lg:w-1/2 relative overflow-hidden bg-primary-container items-center justify-center p-xl">
+                        <div className="absolute inset-0 z-0">
+                            <img alt="Fresh Organic Produce" className="w-full h-full object-cover opacity-40 mix-blend-overlay scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHT_P0UzmGRP6q_qx1g6-fggV245jB8jaG9_qINbsEugmAqD5Rvx0UBbXjXm6BWJyOIMQWFgkTsgLQMpFUDepfOgl3Y17HMkpUui2QWKoU6YNZJu_GLbrGRS03aqL1BIbR1_3hiGN2w8Jib1T3skadwnT2XdAFhTG5HuIEplALEPGGjbBuLuvUxcxF8EJpcoHIMvTv8AzP1DfNAR1ID76XJ1Op6sTC24HLrHA-nf18JBZ2-1NXaWnvRCKX6dKU8yKosnQPT3ygsBs"/>
+                        </div>
+                        <div className="relative z-10 text-center max-w-md text-white">
+                            <h1 className="font-display-lg text-display-lg mb-md leading-tight">Welcome to the Farm to Table Revolution.</h1>
+                            <p className="font-body-lg text-body-lg opacity-90">Join GreenGrocer and get access to the freshest seasonal harvests.</p>
+                        </div>
+                        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-tertiary/20 organic-shape blur-3xl"></div>
+                        <div className="absolute -top-20 -right-20 w-96 h-96 bg-primary/20 organic-shape blur-3xl"></div>
+                    </section>
+                    <section className="flex-1 flex flex-col items-center justify-center px-margin-mobile py-lg md:px-margin-desktop bg-surface">
+                        <div className="w-full max-w-2xl">
+                            <div className="flex flex-col items-center md:items-start mb-lg">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="material-symbols-outlined text-primary text-4xl">eco</span>
+                                    <span className="font-headline-md text-headline-md text-primary tracking-tight">GreenGrocer</span>
+                                </div>
+                                <h2 className="font-headline-lg text-headline-lg text-on-surface">Create your account</h2>
+                            </div>
+                            <form className="space-y-gutter" onSubmit={(e) => { e.preventDefault(); navigate('/'); }}>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                                    <div className="space-y-base"><input className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-md" placeholder="Full Name" type="text"/></div>
+                                    <div className="space-y-base"><input className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-md" placeholder="Email Address" type="email"/></div>
+                                    <div className="space-y-base"><input className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-md" placeholder="Password" type="password"/></div>
+                                    <div className="space-y-base"><input className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-md" placeholder="Confirm Password" type="password"/></div>
+                                </div>
+                                <button type="submit" className="w-full py-4 bg-primary text-on-primary font-label-lg rounded-md hover:opacity-90">Create Account</button>
+                                <p className="text-center">Already have an account? <Link to="/login" className="text-primary font-bold">Login</Link></p>
+                            </form>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        const LoginPage = () => {
+            const navigate = useNavigate();
+            return (
+                <main className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center p-4">
+                    <div className="w-full max-w-[480px] bg-surface-container-lowest rounded-3xl p-8 shadow-lg border border-outline-variant/20">
+                        <div className="mb-lg text-center">
+                            <h1 className="font-headline-md text-headline-md text-primary mb-xs">GreenGrocer</h1>
+                            <p className="font-label-lg text-label-lg text-on-surface-variant tracking-widest uppercase">Organic Markets</p>
+                        </div>
+                        <form className="flex flex-col gap-md" onSubmit={(e) => { e.preventDefault(); navigate('/'); }}>
+                            <input className="w-full p-4 rounded-xl border border-outline-variant bg-surface-container-low" placeholder="Email Address" type="email"/>
+                            <input className="w-full p-4 rounded-xl border border-outline-variant bg-surface-container-low" placeholder="Password" type="password"/>
+                            <button className="w-full bg-primary text-on-primary py-4 rounded-xl font-label-lg flex items-center justify-center gap-base">
+                                Login <span className="material-symbols-outlined">arrow_forward</span>
+                            </button>
+                        </form>
+                        <p className="mt-lg text-center">New to GreenGrocer? <Link to="/register" className="text-primary font-bold">Create account</Link></p>
+                    </div>
+                </main>
+            );
+        };
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="min-h-screen">
+                    <TopBar />
+                    <aside className="fixed left-0 top-0 h-full w-64 hidden lg:flex flex-col bg-surface-container-low z-40">
+                        <nav className="flex flex-col gap-base p-6 pt-32">
+                            <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Categories</h3>
+                            <Link to="/shop" className="flex items-center gap-4 p-3 text-primary font-bold bg-primary-container/10 rounded-md">
+                                <span className="material-symbols-outlined">eco</span>Fresh Produce
+                            </Link>
+                            <a href="#" className="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-md">
+                                <span className="material-symbols-outlined">egg</span>Dairy & Eggs
+                            </a>
+                            <a href="#" className="flex items-center gap-4 p-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-md">
+                                <span className="material-symbols-outlined">bakery_dining</span>Bakery
+                            </a>
+                        </nav>
+                    </aside>
+                    <main className="lg:pl-64 pt-24 pb-32">
+                        <div className="px-4 md:px-gutter max-w-[1200px] mx-auto">
+                            <section className="mb-xl">
+                                <div className="relative rounded-[32px] overflow-hidden aspect-[21/9] lg:aspect-[3/1] group shadow-xl">
+                                    <img className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPgbriW_ZwO8OxGMDs3qIAhppyE5fdMqe5ASaEZvogG1yZ8181sPJob7iADz__nt-yZtFKZ8mckayT7DS6AJtIhcQvX807JgCbm7fiEWf7_RdM-WMT9HnE2Zd7XOpeH-4n2msTze730HW8q5v8_g7Ta1OyyImOXMuWcyNgzNmY0slMgweWrJTiBGAJwaMd57kNHCoxxgRNJbxm9m-OWvlY3E37yGOlKFxENqCgw25H9vW9mRcZlNDn0FV56j0E3LjSxNczQB7GHf4"/>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-transparent flex flex-col justify-center px-12 text-white">
+                                        <span className="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full w-fit font-bold text-label-sm mb-4">SEASONAL SPECIAL</span>
+                                        <h2 className="font-display-lg text-display-lg max-w-md mb-6">Fresh Summer Harvest - 30% Off</h2>
+                                        <button onClick={() => navigate('/shop')} className="bg-white text-primary px-8 py-3 rounded-md font-bold w-fit hover:bg-primary-fixed transition-colors">Shop Now</button>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="mb-xl">
+                                <h3 className="font-headline-lg text-headline-lg text-primary mb-8">Flash Sales</h3>
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
+                                    {[
+                                        { id: 1, name: 'Organic Strawberries', price: '$4.50', old: '$5.60', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGspIMavNkcbU2GNxlIOmpL4_7AssZr96mPl34qahPp9BCHLJaWj0xNcEWCao8EMl2VpKCu6UXfxQKZjWAgSz9saP22do6Ief0Xep5hSH__Zl3OnijBvndSqYJYm9dmB_8Pelj8aMLucs6pvVYmL0_5K-GxAx4ZNgcw3oOInQzRtVw77gbeR5RQWSZ4tpSGwN68s_T03C4H6GlRZu4pT5KtWLKD9IpFn7HIFxq9sEpz9j3Vyx4oGjtR1-kHKmRer7LNGhAjDZmwjk' },
+                                        { id: 2, name: 'Artisan Cheddar', price: '$12.00', old: '$14.10', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCA3fegcelv4QXa7gyan91rs9SrgPlM2gSJFDKP-B_d9uRdzlyjQ_iG2g4j9qFmQOdsrTepDZLqf38bgBU0P9B-CGE1x6HAAPRJUjoVVpRG6zhn0Mw3Qb4vkGGqqEW1-XxE_IwgvRhlxwbXFAuqz3j0gI8hWQk2Ue8dW-danbVYrkJFEF5CEPZkdgi2EUGVLim9-m91GLBDb9jk1W_C0lgw4ZCj6mUS31BXVjcjSp3NUAJWoMDdxKs5w8Yk7-CaOiaIyuEbLQCHvKA' },
+                                        { id: 3, name: 'Superfood Kale', price: '$3.95', old: null, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9UdMY3eA3xKAYcnBDtysyKK7boMlB67khJ5b6v0YM1ZDdhEnYQBgpYb2jVEptF8RxI7sjHagL6C50Xg18-Z-ebhTFfphPlwBrFrPso7cfsdZG3l8o5S-Eg06haskujPSnqdoS9EPTHIsSQpOZnn7l4IBl9m6VWAA4CPW6zRFu_dZPKF77nwzjYuMjeVFYIAthgJnR4Ep1rWt3_h0blCUzaum6ts2JkX9wqOQkk9UEnGakAQVqGIAgIjC8f-mfm262e7kGGZqEKus' },
+                                        { id: 4, name: 'Sourdough', price: '$6.50', old: null, img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCg58Hug3TV9T8w1Iy0gwYKrYMthrT54ehHYV1NA5txqDP8KaWcK22L9A0nhi2qUZnA4BVxXYx4nH3us3PZgWTG2dNyDRSoODXYtbSsKFXd7UDqCQiB-ZabRwUB7CWw-7DBSLDm7qXA5w6jRxyQka98ZWzLQs8GDP4gPHnZAOrrNFXmbb_XS47kHW-7lIjcgB-ZWCglwDbaUim8FtKoGKQu_8XJQmTOKhx3V7-5nW08Dn0258CmD6QngDV1g23zGniecUk7w7IALyM' },
+                                    ].map(item => (
+                                        <div key={item.id} onClick={() => navigate('/product/1')} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all">
+                                            <div className="aspect-square bg-surface rounded-xl mb-4 overflow-hidden">
+                                                <img src={item.img} className="w-full h-full object-cover" />
+                                            </div>
+                                            <h4 className="font-bold truncate">{item.name}</h4>
+                                            <div className="flex justify-between items-center mt-2">
+                                                <span className="text-primary font-bold">{item.price}</span>
+                                                <button className="w-8 h-8 bg-secondary-container rounded-full flex items-center justify-center"><span className="material-symbols-outlined text-sm">add</span></button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </div>
+                    </main>
+                    <BottomNav />
+                </div>
+            );
+        };
+
+        const ShopPage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="min-h-screen">
+                    <TopBar />
+                    <main className="lg:ml-64 pt-24 pb-24">
+                        <div className="max-w-[1440px] mx-auto px-4 md:px-margin-desktop">
+                            <h2 className="font-headline-lg text-headline-lg text-primary mb-8">All Harvests</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">
+                                {[
+                                    { name: 'Heirloom Purple Carrots', price: '$4.50', farm: 'Willowbrook Farm', color: '#E9F0E8', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_d3mqALsskRVNYGmfz2mJyIQAfE94ZgpyqSsXRfoygdWFi1Un41ZhDXkcsaOwgwtSKvrsdnqKSaO1q8oqHU4Lp_fMn36AfRavwylr4k-i3mLR6bWcYfMuJNgTLEHZ62ilZfBgTWCM_11hpDYI7cYsPRg6JuV5VF56Qb3U5LQEPRtUaj71ilKkUcPTdDT7-GnWBQPI2YW2y7CPEeu4_QZVS05ZH0Fw1u6OggbDXTyZJ9zcCU7fnnj0EZSchWhqsDO2s_JczVpdLmU' },
+                                    { name: 'Organic Hass Avocado', price: '$2.20', farm: 'California Local', color: '#FDF7E4', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMDYwFJTDENJXq452hZ3lPDsc2HtNRBKuy9oPMjV-P9J6fDc75jhF3R7Gt_ktU95NRnp9ttbhntDCJ8CgoffhrvYRtjryBLeakwi7wmZ76kzrtMWr7BPtcpMUQBQXSD39pSwPCSY1cBr2Qq70ihqqOKV2K3I9F3cs-xjUBIdvdHd-A81891-0E0ELEguQLVXJpm9ICAFVetwkFLCy9BwOjz9_eHR4xJYPzgTv4yvD6H7zaAGPazGHPSG1shzhJQThTHgYF72Ci5pA' },
+                                    { name: 'Heritage Sourdough', price: '$7.00', farm: 'Daily Baked', color: '#EAEAEA', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAq3UtnsschLHP4D9VoBIe9uSbdA6MgV0uRFrGOPFkJQtXBNEKsNEllhIn1qY6nUsA6-wLx3M85a4RiINVYn1XkrGjzY1P0betKsCsnzpFAqcy2T65Vj0XAKBMNpCsbC59zBsEfi022FYosgIrl_dMz-SB2G-SyCxNzoU171b9a9P_TXsGXl9R3XmUXuWTkbcmt781VjxhVfY7hU9W_xAHQBhgu-g81M9AdsEv0dsQOeaWqYvJh9F23NtXcDs-EBS-U6XiZGkyP6wo' },
+                                    { name: 'Honeycrisp Apples', price: '$5.90', farm: 'Green Valley Orchard', color: '#F5EFE6', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfHGeqFKNHTnM3LGuviwdeKPVtGJHR5vKs07MaWSYieN_wFfSDfqD7HkgB183etp1bki0Wk3KtO9lxgs_5ztVZ3ULgpDzcV2AzC0rAydCDMmDxxGSYsEz5u0M1AwRIUsN1t54Hh4aBEwNm3QwNPnMr6ha8fMaI4xu4QILErf9MW6YO2oOAwhl_WWg5z2tZjTH5MG2Kz89YV1ogMI2xDvI8JVtvgCzfZ2zEPWrlKPZ_JGtjQSXuQQyv4ZaoUkWHbBvziQ0ZK44eGxE' }
+                                ].map((product, idx) => (
+                                    <div key={idx} onClick={() => navigate('/product/1')} className="bg-white rounded-3xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group">
+                                        <div className="aspect-square flex items-center justify-center p-8" style={{ backgroundColor: product.color }}>
+                                            <img src={product.img} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform" />
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="font-headline-sm text-on-surface">{product.name}</h3>
+                                                <span className="font-bold text-primary">{product.price}</span>
+                                            </div>
+                                            <p className="text-label-sm text-outline mb-4">{product.farm}</p>
+                                            <button className="w-full bg-secondary-container hover:bg-secondary text-on-secondary-container font-bold py-3 rounded-md flex items-center justify-center gap-2">
+                                                <span className="material-symbols-outlined">add_shopping_cart</span>Add to Cart
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </main>
+                    <BottomNav />
+                </div>
+            );
+        };
+
+        const ProductDetail = () => {
+            const [qty, setQty] = useState(1);
+            return (
+                <div className="min-h-screen pb-32">
+                    <TopBar />
+                    <main className="pt-32 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+                            <div className="lg:col-span-7">
+                                <div className="rounded-[24px] overflow-hidden aspect-[4/3]">
+                                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk_5TUYEjyeZ2Bzy1PRTIX0ABoKayjbh_kluGqIuN0QmSRvftsm8ddGnd_k4HZeDthcQX1LaXJoiM89lPxd1UPZaInrjMuwT6sLAbHVtnxmccrGN8GhiCA2_7uXnfPhz729zqndCWv1Tr6BttwIhhjTC8lk0-Y1qQtiapGa1BAmCbG-iaIyo2W1pvLZ1qCXOa5_Q0ZhUOtm3s8k451wsEybH2sMrx46uZjyS99avAqwVQH-jR79P9JURyq0BltBTaTV4lXGI6gKl4" className="w-full h-full object-cover" />
+                                </div>
+                            </div>
+                            <div className="lg:col-span-5">
+                                <h1 className="font-display-lg text-display-lg text-primary mb-2">Organic Heirloom Tomatoes</h1>
+                                <p className="text-on-surface-variant mb-6">by Sunny Valley Farms</p>
+                                <div className="bg-surface-container-low p-md rounded-2xl mb-lg">
+                                    <div className="flex items-end justify-between mb-md">
+                                        <div><span className="text-3xl font-bold text-primary">$8.50</span> / lb</div>
+                                        <div className="text-tertiary font-bold">Harvested 4 hours ago</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-md">
+                                    <div className="flex items-center bg-surface-container rounded-md px-4 py-2 gap-4">
+                                        <button onClick={() => setQty(Math.max(1, qty-1))}><span className="material-symbols-outlined">remove</span></button>
+                                        <span className="font-bold">{qty}</span>
+                                        <button onClick={() => setQty(qty+1)}><span className="material-symbols-outlined">add</span></button>
+                                    </div>
+                                    <Link to="/cart" className="flex-1 bg-primary text-white py-3 rounded-md font-bold text-center">Add to Cart</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <BottomNav />
+                </div>
+            );
+        };
+
+        const CartPage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="min-h-screen">
+                    <TopBar />
+                    <main className="pt-32 pb-xl px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+                        <h2 className="font-headline-lg text-headline-lg text-primary mb-lg">Your Basket</h2>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+                            <div className="lg:col-span-8 flex flex-col gap-base">
+                                {[
+                                    { name: 'Organic Heirloom Carrots', price: '$4.50', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-hI__lQrqe9kJpYS1EkcnHmfZD5oxRldEL6LaxTozZeIH3mO3H-wyDsG3s7iaCdurkbrD2Oa68sypZsD-UUFxDE-DLBbrYjge26YsQjtXcYV-nVTBmW_CIIEFQMTb6k3SYd2bpr4YjpeHhw2a70_DglEKPSV0rGI-i4hw5x9B1ruZE-F0sFJmli8VGeU4f-hUmo0vRggly6cfRaeICLXlP7AuaK9A96pGZDjmrWnBFnr5HWmBkapnp135vXl95e_x-KG06H0L9i0' },
+                                    { name: 'Artisanal Sourdough', price: '$8.00', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA9uCwf1V-QsP0J8G-IIFgjitPxFo5AZy0aL8Q5fVA6P5S1hxfpUlLda9Rc_i9GbMVBfTsi2CkRmGq5Xz8Tvuihs9o9eGU__fn0r3b99ucwohyRrTUy63EQyj6cEyz-_MkLYBLgabMrm7937bo2p4r5y5cGtyB3-5cUHSYfvY935s29biBcoppI5LfMMQwS5U_rJcMWJDqt2cH1JrsseznOA_K7qZk7RL7FjEExNzs6PMT2qcQ_D6MYYTbLp0QySwlqmOHgOWKj1yo' }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-white p-6 rounded-xl flex gap-6 shadow-sm">
+                                        <img src={item.img} className="w-24 h-24 rounded-md object-cover" />
+                                        <div className="flex-1">
+                                            <div className="flex justify-between">
+                                                <h3 className="font-bold">{item.name}</h3>
+                                                <span className="text-primary font-bold">{item.price}</span>
+                                            </div>
+                                            <button className="text-error text-sm mt-4">Remove</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="lg:col-span-4">
+                                <div className="bg-surface-container-low p-8 rounded-2xl shadow-sm">
+                                    <h3 className="font-headline-md mb-6">Order Summary</h3>
+                                    <div className="flex justify-between mb-4"><span>Subtotal</span><span>$12.50</span></div>
+                                    <div className="flex justify-between mb-8 font-bold text-xl border-t pt-4"><span>Total</span><span className="text-primary">$12.50</span></div>
+                                    <button onClick={() => navigate('/checkout')} className="w-full bg-primary text-white py-4 rounded-md font-bold">Proceed to Checkout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <BottomNav />
+                </div>
+            );
+        };
+
+        const CheckoutPage = () => {
+            const [placed, setPlaced] = useState(false);
+            const navigate = useNavigate();
+            return (
+                <div className="min-h-screen">
+                    <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md shadow-sm p-4">
+                        <div className="flex items-center gap-4 max-w-[1440px] mx-auto">
+                            <button onClick={() => navigate('/cart')}><span className="material-symbols-outlined text-primary">arrow_back</span></button>
+                            <h1 className="font-bold text-xl">Checkout</h1>
+                        </div>
+                    </header>
+                    <main className="pt-24 pb-32 px-4 max-w-[1440px] mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <div className="lg:col-span-7 space-y-8">
+                                <section className="bg-white p-6 rounded-xl shadow-sm">
+                                    <h2 className="font-bold text-lg mb-4">Delivery Address</h2>
+                                    <div className="p-4 bg-surface-container rounded-md">4521 Organic Way, Green Valley, CA</div>
+                                </section>
+                                <section className="bg-white p-6 rounded-xl shadow-sm">
+                                    <h2 className="font-bold text-lg mb-4">Payment Method</h2>
+                                    <div className="p-4 border-2 border-primary bg-primary/5 rounded-md flex items-center gap-4">
+                                        <span className="material-symbols-outlined text-primary">credit_card</span>
+                                        <span>Visa ending in 4242</span>
+                                    </div>
+                                </section>
+                            </div>
+                            <div className="lg:col-span-5">
+                                <div className="bg-white p-6 rounded-xl shadow-sm">
+                                    <h3 className="font-bold mb-4">Total Amount</h3>
+                                    <div className="text-3xl font-bold text-primary mb-6">$12.50</div>
+                                    <button onClick={() => setPlaced(true)} className="w-full bg-primary text-white py-4 rounded-md font-bold">Place Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    {placed && (
+                        <div className="fixed inset-0 bg-white/95 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
+                            <div className="text-center">
+                                <span className="material-symbols-outlined text-primary text-9xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                                <h2 className="text-4xl font-bold text-primary mb-2">Order Placed!</h2>
+                                <p className="mb-8">Your fresh organic goodies are being hand-picked.</p>
+                                <button onClick={() => navigate('/')} className="bg-primary text-white px-8 py-3 rounded-md font-bold">Back to Home</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const ProfilePage = () => {
+            return (
+                <div className="min-h-screen">
+                    <TopBar />
+                    <main className="pt-32 pb-xl px-4 max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-lg">
+                        <aside className="w-full lg:w-72 shrink-0">
+                            <div className="bg-surface-container-low p-6 rounded-3xl space-y-2">
+                                <button className="w-full text-left p-3 rounded-md bg-primary text-white font-bold">Personal Details</button>
+                                <button className="w-full text-left p-3 rounded-md hover:bg-surface-variant">Order History</button>
+                                <button className="w-full text-left p-3 rounded-md hover:bg-surface-variant">Saved Addresses</button>
+                            </div>
+                        </aside>
+                        <div className="flex-grow space-y-8">
+                            <section className="bg-surface-container-highest rounded-3xl p-8 flex items-center gap-8">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwVpt3eBdXV7ntHOCdmUcaX8m-urtyie4MwMIV-Hij1kJCZQBJxA6K9BTYGinPSDCyDEChUQvueipQz0QBjzRN5_TBZiTiBbEV0CZBGbE8iH3DdIrkadGw5EiSTnwvIIw3WHB9B7lEo9iMmjmWMvJqUyS7ow73kyI7w_mRZiVQJx5kq5uRbOCgg0C9quYNhSINqpBjiGJzdtat3BKCcsrDCmyZDciwUsr1f_Q8CC6alkDlNfJBuQtv12SIfBhtlhx7-Cm2I5_-vh4" className="w-32 h-32 rounded-full border-4 border-white shadow-lg" />
+                                <div>
+                                    <h1 className="text-3xl font-bold text-primary">Julian Henderson</h1>
+                                    <p>julian.h@organicmarket.com</p>
+                                </div>
+                            </section>
+                            <section className="bg-white p-8 rounded-3xl shadow-sm border">
+                                <h3 className="font-bold text-xl mb-6">Personal Information</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label className="block text-sm mb-1">Full Name</label><input className="w-full p-3 bg-surface-container-low rounded-md border-none" value="Julian Henderson" readOnly /></div>
+                                    <div><label className="block text-sm mb-1">Email</label><input className="w-full p-3 bg-surface-container-low rounded-md border-none" value="julian.h@organicmarket.com" readOnly /></div>
+                                </div>
+                            </section>
+                        </div>
+                    </main>
+                    <BottomNav />
+                </div>
+            );
+        };
+
+        // --- App Shell ---
+
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/shop" element={<ShopPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+
+    </script>
+</body>
+</html>

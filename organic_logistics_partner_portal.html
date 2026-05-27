@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Organic Logistics - Partner Portal</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Literata:wght@100..900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#a1d494",
+                    "surface-variant": "#e2e3e1",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#2f3130",
+                    "on-error-container": "#93000a",
+                    "background": "#f9f9f7",
+                    "surface-dim": "#dadad8",
+                    "on-tertiary-fixed-variant": "#364e00",
+                    "surface-container-highest": "#e2e3e1",
+                    "secondary-container": "#fdbc13",
+                    "secondary": "#7a5900",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#6b4d00",
+                    "primary-fixed": "#bcf0ae",
+                    "outline": "#72796e",
+                    "on-secondary-fixed": "#261900",
+                    "on-secondary-fixed-variant": "#5d4200",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#2d5a27",
+                    "tertiary-fixed-dim": "#add461",
+                    "surface": "#f9f9f7",
+                    "on-tertiary-fixed": "#131f00",
+                    "on-primary-fixed-variant": "#23501e",
+                    "on-surface-variant": "#42493e",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1b",
+                    "tertiary-fixed": "#c8f17a",
+                    "surface-container": "#eeeeec",
+                    "surface-container-high": "#e8e8e6",
+                    "surface-container-low": "#f4f4f2",
+                    "surface-bright": "#f9f9f7",
+                    "primary": "#154212",
+                    "tertiary": "#2b3f00",
+                    "tertiary-container": "#3e5800",
+                    "on-surface": "#1a1c1b",
+                    "on-primary-fixed": "#002201",
+                    "surface-tint": "#3b6934",
+                    "secondary-fixed-dim": "#fdbc13",
+                    "on-primary-container": "#9dd090",
+                    "inverse-on-surface": "#f1f1ef",
+                    "on-tertiary-container": "#a9d05e",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c2c9bb",
+                    "primary-fixed-dim": "#a1d494",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#ffdea3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "12px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "margin-desktop": "64px",
+                    "sm": "12px",
+                    "gutter": "24px",
+                    "xl": "80px",
+                    "lg": "48px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Literata"],
+                    "headline-sm": ["Literata"],
+                    "headline-md": ["Literata"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "label-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Literata"],
+                    "body-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .organic-shadow {
+            box-shadow: 0px 4px 20px rgba(45, 90, 39, 0.05);
+        }
+        .organic-shadow-hover:hover {
+            box-shadow: 0px 8px 30px rgba(45, 90, 39, 0.08);
+            transform: translateY(-2px);
+        }
+        .glass-blur {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .map-gradient-overlay {
+            background: linear-gradient(to bottom, rgba(249, 249, 247, 0.8) 0%, rgba(249, 249, 247, 0) 20%, rgba(249, 249, 247, 0) 80%, rgba(249, 249, 247, 0.9) 100%);
+            pointer-events: none;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(.33); opacity: 1; }
+            80%, 100% { opacity: 0; }
+        }
+        .user-location-pulse {
+            position: relative;
+        }
+        .user-location-pulse::before {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            left: -100%;
+            top: -100%;
+            border-radius: 50%;
+            background-color: #2d5a27;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c9bb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Common Components ---
+
+        const Sidebar = ({ activePath }) => {
+            return (
+                <aside className="h-screen w-64 fixed left-0 top-0 bg-surface-container-low flex flex-col py-lg px-md shadow-sm z-50">
+                    <div className="mb-xl">
+                        <h1 className="font-headline-md text-headline-md font-bold text-primary">Partner Portal</h1>
+                        <p className="font-label-sm text-on-surface-variant">Organic Marketplace</p>
+                    </div>
+                    <nav className="flex-1 space-y-base">
+                        <Link to="/" className={`flex items-center gap-sm px-sm py-base rounded-xl transition-colors active:scale-95 duration-150 ${activePath === '/' ? 'text-primary font-bold border-r-4 border-primary bg-surface-container-high' : 'text-on-surface-variant hover:bg-surface-container-high'}`}>
+                            <span className="material-symbols-outlined">dashboard</span>
+                            <span className="font-body-md">Dashboard</span>
+                        </Link>
+                        <Link to="/active-deliveries" className={`flex items-center gap-sm px-sm py-base rounded-xl transition-colors active:scale-95 duration-150 ${activePath === '/active-deliveries' ? 'text-primary font-bold border-r-4 border-primary bg-surface-container-high' : 'text-on-surface-variant hover:bg-surface-container-high'}`}>
+                            <span className="material-symbols-outlined">local_shipping</span>
+                            <span className="font-body-md">Active Deliveries</span>
+                        </Link>
+                        <a href="#" className="flex items-center gap-sm px-sm py-base rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+                            <span className="material-symbols-outlined">history</span>
+                            <span className="font-body-md">History</span>
+                        </a>
+                        <a href="#" className="flex items-center gap-sm px-sm py-base rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+                            <span className="material-symbols-outlined">payments</span>
+                            <span className="font-body-md">Earnings</span>
+                        </a>
+                        <a href="#" className="flex items-center gap-sm px-sm py-base rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+                            <span className="material-symbols-outlined">person</span>
+                            <span className="font-body-md">Profile</span>
+                        </a>
+                        <a href="#" className="flex items-center gap-sm px-sm py-base rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+                            <span className="material-symbols-outlined">settings</span>
+                            <span className="font-body-md">Settings</span>
+                        </a>
+                    </nav>
+                    <div className="mt-auto space-y-md">
+                        {activePath === '/active-deliveries' && (
+                            <div className="p-md bg-primary-container rounded-xl text-on-primary-container">
+                                <p className="font-label-sm mb-sm">Shift Status</p>
+                                <div className="flex items-center justify-between">
+                                    <span className="font-bold">Online</span>
+                                    <div className="w-3 h-3 bg-secondary-container rounded-full animate-pulse"></div>
+                                </div>
+                            </div>
+                        )}
+                        <Link to="/active-deliveries" className="block w-full text-center bg-primary text-on-primary font-label-lg py-base rounded-xl active:scale-95 transition-all">
+                            View Routes
+                        </Link>
+                    </div>
+                </aside>
+            );
+        };
+
+        const TopBar = ({ isOnline, setIsOnline }) => {
+            return (
+                <header className="flex justify-between items-center w-full px-margin-desktop py-base sticky top-0 z-40 bg-surface/80 backdrop-blur-md shadow-sm">
+                    <div className="flex items-center gap-md">
+                        <h2 className="font-headline-sm text-headline-sm text-primary">Partner Dashboard</h2>
+                        <div className="flex bg-surface-container-highest rounded-full p-xs">
+                            <button 
+                                onClick={() => setIsOnline(true)}
+                                className={`px-md py-xs rounded-full font-label-lg transition-all ${isOnline ? 'bg-primary text-on-primary scale-105' : 'text-on-surface-variant hover:text-primary'}`}
+                            >Online</button>
+                            <button 
+                                onClick={() => setIsOnline(false)}
+                                className={`px-md py-xs rounded-full font-label-lg transition-all ${!isOnline ? 'bg-primary text-on-primary scale-105' : 'text-on-surface-variant hover:text-primary'}`}
+                            >Offline</button>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-md">
+                        <div className="flex items-center gap-base">
+                            <button className="p-xs hover:text-primary transition-all scale-105">
+                                <span className="material-symbols-outlined">notifications</span>
+                            </button>
+                            <button className="p-xs hover:text-primary transition-all scale-105">
+                                <span className="material-symbols-outlined">chat</span>
+                            </button>
+                        </div>
+                        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+                            <img alt="Delivery Partner Profile" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuc4yNL5NcIRPTHKBwRHfF0SijK2-ANXAwPDY4pF6d9nxqlcnSVKIeWCTc-PrJtaNdYml1Wpgipq3wwpar7Mgt0qWgYmWfmT9LrFX46h49-JBloLn3iAhQeqENMNDk-kQ7Kp2EYAvMeWuMkh7GqqNH8d8WVTlpc9bwisWKXAuzwZI6uvfBXfitvblsk_hPSxenllAp9AF5s9UUKjFGd7b2gsi-0CxT--4-gtZRQNstSFUSl6QWHdghYHXJlWTTFYrpW5Nb6jUbq9U"/>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        // --- Pages ---
+
+        const Dashboard = ({ isOnline, setIsOnline }) => {
+            return (
+                <div className="ml-64 min-h-screen">
+                    <TopBar isOnline={isOnline} setIsOnline={setIsOnline} />
+                    <div className="px-margin-desktop py-lg space-y-lg">
+                        <section>
+                            <h3 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Logistics Hub</h3>
+                            <p className="text-on-surface-variant font-body-md">Real-time delivery management and dispatch monitoring.</p>
+                        </section>
+
+                        <section className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                            <div className="bg-surface-container-low p-md rounded-xl organic-shadow organic-shadow-hover transition-all">
+                                <div className="flex justify-between items-start mb-base">
+                                    <span className="p-xs bg-primary-fixed rounded-lg text-primary">
+                                        <span className="material-symbols-outlined">local_shipping</span>
+                                    </span>
+                                    <span className="font-label-sm text-primary bg-primary-fixed/30 px-sm py-xs rounded-full">Live</span>
+                                </div>
+                                <div className="font-display-lg text-display-lg text-primary">12</div>
+                                <div className="font-headline-sm text-headline-sm text-on-surface">Active Deliveries</div>
+                                <div className="text-on-surface-variant font-label-sm mt-xs">4 arriving within 10 mins</div>
+                            </div>
+                            <div className="bg-surface-container-low p-md rounded-xl organic-shadow organic-shadow-hover transition-all">
+                                <div className="flex justify-between items-start mb-base">
+                                    <span className="p-xs bg-secondary-fixed rounded-lg text-secondary">
+                                        <span className="material-symbols-outlined">package_2</span>
+                                    </span>
+                                </div>
+                                <div className="font-display-lg text-display-lg text-secondary">08</div>
+                                <div className="font-headline-sm text-headline-sm text-on-surface">Awaiting Pickup</div>
+                                <div className="text-on-surface-variant font-label-sm mt-xs">At Hub: Central Organic</div>
+                            </div>
+                            <div className="bg-surface-container-low p-md rounded-xl organic-shadow organic-shadow-hover transition-all">
+                                <div className="flex justify-between items-start mb-base">
+                                    <span className="p-xs bg-tertiary-fixed rounded-lg text-tertiary">
+                                        <span className="material-symbols-outlined">verified</span>
+                                    </span>
+                                </div>
+                                <div className="font-display-lg text-display-lg text-tertiary">98.4%</div>
+                                <div className="font-headline-sm text-headline-sm text-on-surface">On-time Rate</div>
+                                <div className="text-on-surface-variant font-label-sm mt-xs">↑ 1.2% from last week</div>
+                            </div>
+                        </section>
+
+                        <div className="grid grid-cols-12 gap-gutter">
+                            <section className="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl organic-shadow overflow-hidden relative group">
+                                <div className="absolute top-md left-md z-10 glass-blur bg-white/60 p-sm rounded-xl border border-white/40 shadow-sm">
+                                    <div className="flex items-center gap-base">
+                                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                        <span className="font-label-lg text-primary">Live Courier Locations</span>
+                                    </div>
+                                </div>
+                                <div className="h-[500px] w-full bg-surface-dim relative">
+                                    <img alt="Live Fleet Map" className="w-full h-full object-cover grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlpQN7MJ3s3ihLVj8mLaYvc-7fniblOrcIYUVHIU-f0iVMAyyroh2tSK1IJiOIBzd2bAl5TZReCkxYdd4VA8dMsCMCyYXlWLWHzZHd0tDUkVLbCLe-FwHAdKuzZnc_DivzT7pmBOsC6Nje5wkkuccRrDriMamkNO2JtZe43KSELg5NjSF9cGy5RX8qRrkvVlXHMeK6NiDwy-wSjacXg3ow2fjkK6-HnFbQxiTyS7G91H0bs-zJPprh8qfJBkEyrISD1LT3gPjJjyE"/>
+                                    <div className="absolute top-1/3 left-1/4 w-8 h-8 flex items-center justify-center">
+                                        <span className="absolute w-full h-full rounded-full bg-primary/20 animate-ping"></span>
+                                        <span className="w-3 h-3 rounded-full bg-primary border-2 border-white"></span>
+                                    </div>
+                                    <div className="absolute bottom-1/4 right-1/3 w-8 h-8 flex items-center justify-center">
+                                        <span className="absolute w-full h-full rounded-full bg-primary/20 animate-ping" style={{animationDelay: '1s'}}></span>
+                                        <span className="w-3 h-3 rounded-full bg-primary border-2 border-white"></span>
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-md left-md right-md flex justify-between items-center">
+                                    <div className="flex -space-x-2">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-surface-container overflow-hidden">
+                                                <img alt="Courier" src={`https://lh3.googleusercontent.com/aida-public/AB6AXuCr-tBvKa4Z38CxDR8AwCiA7iO-4QUL-WnIVd26NcOBlN4D1fLtDHHX3d30Di1Q2Cw4d_Ftta3W_6OUpSGQC8kVZ2Lnfp5U_x5HAoVxJl3Ut39UZMsQKpfERNlxh1JnSz2t4Ausy4q6SnIoLAwX8QLzJUXmjT_3Mv2NLdV3-ACJ5xG14oXKMCLDbOA0lgv-FngwbAJiBQDU3lToY9zp-dAICSJ-Cv9zcmMtaOgf27lyGGHXK-t5C88scl5nw4UVvBJOd7Gf9B7qZOQ`} />
+                                            </div>
+                                        ))}
+                                        <div className="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center font-label-sm text-on-surface">+5</div>
+                                    </div>
+                                    <button className="bg-white/90 glass-blur px-md py-xs rounded-full font-label-lg text-primary organic-shadow active:scale-95 transition-all">
+                                        Expand Map View
+                                    </button>
+                                </div>
+                            </section>
+
+                            <section className="col-span-12 lg:col-span-4 bg-surface-container-low rounded-xl organic-shadow flex flex-col">
+                                <div className="p-md border-b border-outline-variant">
+                                    <div className="flex justify-between items-center">
+                                        <h4 className="font-headline-sm text-headline-sm text-on-surface">Active Dispatch</h4>
+                                        <span className="font-label-sm text-on-surface-variant">Queue: 14</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-md space-y-md max-h-[420px] custom-scrollbar">
+                                    <DispatchItem tag="Urgent" tagColor="bg-error-container text-on-error-container" id="#ORD-2841" time="12 mins" distance="2.4 km" addr="841 Organic Way, North District" />
+                                    <hr className="border-outline-variant opacity-50"/>
+                                    <DispatchItem tag="Priority" tagColor="bg-tertiary-container text-on-tertiary-container" id="#ORD-2902" time="24 mins" distance="4.8 km" addr="12 Harvest Lane, West Side" />
+                                    <hr className="border-outline-variant opacity-50"/>
+                                    <DispatchItem tag="Standard" tagColor="bg-surface-container-highest text-on-surface-variant" id="#ORD-3112" time="18 mins" distance="1.2 km" addr="55 Green Meadow, South Peak" />
+                                </div>
+                                <button className="m-md mt-auto border-2 border-primary text-primary font-label-lg py-base rounded-xl hover:bg-primary/5 transition-colors">
+                                    View Full Dispatch
+                                </button>
+                            </section>
+                        </div>
+
+                        <section className="grid grid-cols-1 md:grid-cols-4 gap-gutter pb-xl">
+                            <div className="md:col-span-2 bg-primary-container text-on-primary-container p-lg rounded-xl flex flex-col justify-between">
+                                <div>
+                                    <h5 className="font-headline-sm text-headline-sm mb-xs">Optimize Your Routes</h5>
+                                    <p className="font-body-md opacity-90">AI-powered batching can save you up to 15% on fuel today.</p>
+                                </div>
+                                <button className="bg-secondary-container text-on-secondary-container w-fit px-lg py-base rounded-xl font-label-lg mt-lg active:scale-95 transition-all">
+                                    Apply Smart Batching
+                                </button>
+                            </div>
+                            <div className="bg-surface-container-low p-md rounded-xl organic-shadow flex flex-col items-center justify-center text-center">
+                                <span className="material-symbols-outlined text-primary text-4xl mb-base">eco</span>
+                                <div className="font-headline-sm text-on-surface">Carbon Saved</div>
+                                <div className="text-primary font-display-lg">12.4kg</div>
+                                <p className="text-on-surface-variant font-label-sm">This Month</p>
+                            </div>
+                            <div className="bg-surface-container-low p-md rounded-xl organic-shadow flex flex-col items-center justify-center text-center">
+                                <span className="material-symbols-outlined text-secondary text-4xl mb-base">wallet</span>
+                                <div className="font-headline-sm text-on-surface">Today's Pay</div>
+                                <div className="text-secondary font-display-lg">$242.50</div>
+                                <p className="text-on-surface-variant font-label-sm">Including Tips</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            );
+        };
+
+        const DispatchItem = ({ tag, tagColor, id, time, distance, addr }) => {
+            const navigate = useNavigate();
+            return (
+                <div className="group cursor-pointer" onClick={() => navigate('/active-deliveries')}>
+                    <div className="flex justify-between items-start mb-xs">
+                        <span className={`${tagColor} font-label-sm px-sm py-xs rounded-lg`}>{tag}</span>
+                        <span className="text-on-surface-variant font-label-sm">{id}</span>
+                    </div>
+                    <div className="font-label-lg text-on-surface">{distance} • {time} remain</div>
+                    <p className="text-on-surface-variant font-body-md text-sm mb-base">{addr}</p>
+                    <div className="flex gap-base opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="flex-1 bg-primary text-on-primary font-label-sm py-xs rounded-lg flex items-center justify-center gap-xs">
+                            <span className="material-symbols-outlined text-[18px]">near_me</span> Navigate
+                        </button>
+                        <button className="p-xs border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">
+                            <span className="material-symbols-outlined text-[18px]">more_vert</span>
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const ActiveDeliveries = ({ isOnline, setIsOnline }) => {
+            const [isExpanded, setIsExpanded] = useState(false);
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [pos, setPos] = useState(40);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    setPos(p => (p > 90 ? 40 : p + 0.05));
+                }, 100);
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div className="ml-64 relative h-screen w-[calc(100%-16rem)] overflow-hidden">
+                    <TopBar isOnline={isOnline} setIsOnline={setIsOnline} />
+                    
+                    <div className="absolute inset-0 z-0 top-0">
+                        <img className="w-full h-full object-cover filter brightness-95 contrast-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABePW6jJ6qf_ay_sGXzcd2815K1BWpMEDn562Y4boSBFjs1L6Zw3lF52tyF8SqR04THyN5VhlZPGF5wvw10CARvCNaYzZfOO1hSJHmwnsuvf-leSSErcTBZQmClNEzHs6Rw-YXPcWY1MQrxpmE0ynJTY0Sbx2r3D6B2fGT1xY7-f7jbBUqLppYH1CXwiRZVfLL2DJilSfNbY6TG6QT-0h3P9l_4xC9sSKJvrM0EDaDGmP6T7tsVTLaT6FPDsnVuuolF8ZZO4ZBb7s"/>
+                        <div className="map-gradient-overlay absolute inset-0"></div>
+                        <div className="absolute top-[20%] transition-all duration-100" style={{left: `${pos}%`}}>
+                            <div className="w-4 h-4 bg-primary rounded-full user-location-pulse z-10 border-2 border-white shadow-lg"></div>
+                        </div>
+                        <div className="absolute top-[60%] left-[75%]">
+                            <div className="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-bold shadow-md flex items-center space-x-xs">
+                                <span className="material-symbols-outlined text-sm">location_on</span>
+                                <span>Drop-off</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="absolute top-24 left-md z-20 w-80">
+                        <div className="glass-panel p-md rounded-xl shadow-lg border border-white/40">
+                            <div className="flex items-center space-x-md mb-sm">
+                                <div className="bg-primary p-3 rounded-xl text-white">
+                                    <span className="material-symbols-outlined text-[32px]">turn_right</span>
+                                </div>
+                                <div>
+                                    <p className="font-headline-sm text-primary">Turn Right</p>
+                                    <p className="text-on-surface-variant font-body-md">onto Market St.</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-between items-end">
+                                <div>
+                                    <p className="text-on-surface-variant text-label-sm uppercase">Next turn in</p>
+                                    <p className="font-headline-md text-primary">450 <span className="text-body-md">m</span></p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-on-surface-variant text-label-sm uppercase">ETA</p>
+                                    <p className="font-headline-md text-secondary">11:42 <span className="text-body-md">AM</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="absolute top-24 right-md z-30 flex flex-col items-end space-y-md">
+                        <div className="glass-panel p-sm rounded-full shadow-lg border border-white/40 flex flex-col space-y-sm">
+                            <button className="w-12 h-12 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm">
+                                <span className="material-symbols-outlined">my_location</span>
+                            </button>
+                            <button className="w-12 h-12 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm">
+                                <span className="material-symbols-outlined">layers</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className={`absolute bottom-0 left-0 w-full z-40 px-md transition-transform duration-300 ${isExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-80px)] md:translate-y-[calc(100%-120px)]'}`}>
+                        <div className="glass-panel rounded-t-3xl shadow-2xl border-t border-white/60 p-md md:p-xl max-w-4xl mx-auto">
+                            <div className="w-12 h-1.5 bg-outline-variant rounded-full mx-auto mb-lg cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-md md:gap-xl">
+                                <div className="space-y-lg">
+                                    <div className="flex items-start space-x-md">
+                                        <img alt="Customer" className="w-16 h-16 rounded-2xl object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqSU7gd4cpBi41Rovyqz9IZ4dqnMPFxuh-oWIwJBR7s1HfDlbGP_kb0U45DJsEf60Nt14yjVk4t-zyB9z0HgCU_XIQQgUDV8oxvpjqg2eHeDZBLBS-kzV8b7ejT6JtRu9pa4JMtC3aAJam4t7AxcjjrekCVEeGzGE262kFGhqWvbi9zyDU7meHEwkLZuwfL5k5YyVgkv5l5fxvCWm2GxYov4p9dXVjlrkFJ73ay8AXZQA2etyTp85lnlsHPDuy2DS5VhEl4JNsDOk"/>
+                                        <div>
+                                            <p className="text-label-sm text-on-surface-variant uppercase tracking-widest mb-xs">Customer</p>
+                                            <h3 className="font-headline-md text-on-surface">Julian Sterling</h3>
+                                            <p className="text-body-md text-primary font-semibold flex items-center">
+                                                <span className="material-symbols-outlined scale-75 mr-xs" style={{fontVariationSettings: "'FILL' 1"}}>star</span>
+                                                4.9 Premium Member
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-md">
+                                        <div className="flex items-start space-x-md">
+                                            <div className="w-8 flex flex-col items-center">
+                                                <span className="material-symbols-outlined text-tertiary-container" style={{fontVariationSettings: "'FILL' 1"}}>eco</span>
+                                                <div className="w-0.5 h-12 border-l-2 border-dashed border-outline-variant my-xs"></div>
+                                            </div>
+                                            <div>
+                                                <p className="text-label-sm text-on-surface-variant uppercase">Pickup From</p>
+                                                <p className="font-body-lg font-bold text-on-surface">Green Valley Organics</p>
+                                                <p className="text-body-md text-on-surface-variant">1200 Market Street, Suite 400</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start space-x-md">
+                                            <div className="w-8 flex justify-center">
+                                                <span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>home_pin</span>
+                                            </div>
+                                            <div>
+                                                <p className="text-label-sm text-on-surface-variant uppercase">Drop-off At</p>
+                                                <p className="font-body-lg font-bold text-on-surface">88 Pine Terrace</p>
+                                                <p className="text-body-md text-on-surface-variant">Apt 4B, Access Code: 2931</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col justify-between">
+                                    <div className="flex justify-between items-center px-md mb-lg">
+                                        <Step icon="check" label="Pickup" active />
+                                        <div className="h-0.5 flex-1 bg-primary mb-5"></div>
+                                        <Step icon="local_shipping" label="On the Way" active />
+                                        <div className="h-0.5 flex-1 bg-surface-container-highest mb-5"></div>
+                                        <Step icon="inventory_2" label="Delivered" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-md">
+                                        <button className="flex items-center justify-center space-x-sm border-2 border-primary text-primary py-md rounded-xl font-label-lg hover:bg-primary/5 transition-all active:scale-95">
+                                            <span className="material-symbols-outlined">chat</span>
+                                            <span>Contact</span>
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowSuccess(true)}
+                                            className="flex items-center justify-center space-x-sm bg-secondary-container text-on-secondary-container py-md rounded-xl font-label-lg shadow-lg hover:brightness-105 transition-all active:scale-95 group"
+                                        >
+                                            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">check_circle</span>
+                                            <span>Complete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {showSuccess && (
+                        <div className="fixed inset-0 z-[60] bg-primary/95 flex items-center justify-center transition-opacity duration-500">
+                            <div className="text-center text-white p-xl max-w-md animate-in fade-in zoom-in duration-300">
+                                <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-xl animate-bounce">
+                                    <span className="material-symbols-outlined text-[64px]" style={{fontVariationSettings: "'wght' 700"}}>done_all</span>
+                                </div>
+                                <h2 className="font-display-lg text-display-lg mb-md">Excellent Work!</h2>
+                                <p className="text-body-lg mb-xl opacity-90">Delivery completed successfully. You earned $14.50 plus a $5.00 tip for this trip.</p>
+                                <button 
+                                    className="bg-secondary-container text-on-secondary-container px-xl py-lg rounded-full font-label-lg shadow-2xl hover:scale-105 transition-transform"
+                                    onClick={() => setShowSuccess(false)}
+                                >
+                                    Return to Map
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const Step = ({ icon, label, active }) => (
+            <div className="flex flex-col items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-xs shadow-md ${active ? 'bg-primary text-white' : 'bg-surface-container-highest text-on-surface-variant'}`}>
+                    <span className="material-symbols-outlined scale-75" style={active ? {fontVariationSettings: "'wght' 700"} : {}}>{icon}</span>
+                </div>
+                <span className={`text-label-sm font-bold ${active ? 'text-primary' : 'text-on-surface-variant'}`}>{label}</span>
+            </div>
+        );
+
+        // --- App Shell ---
+
+        const App = () => {
+            const location = useLocation();
+            const [isOnline, setIsOnline] = useState(true);
+
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar activePath={location.pathname} />
+                    <Routes>
+                        <Route path="/" element={<Dashboard isOnline={isOnline} setIsOnline={setIsOnline} />} />
+                        <Route path="/active-deliveries" element={<ActiveDeliveries isOnline={isOnline} setIsOnline={setIsOnline} />} />
+                    </Routes>
+                </div>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+</body>
+</html>

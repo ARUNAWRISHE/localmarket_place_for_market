@@ -1,0 +1,18 @@
+export const ROUTES = {
+  home: '/',
+  shop: '/shop',
+  categories: '/categories',
+  product: (id = ':id') => `/product/${id}`,
+  search: '/search',
+  cart: '/cart',
+  checkout: '/checkout',
+  orders: '/orders',
+  profile: '/profile',
+  wishlist: '/wishlist',
+  tracking: '/tracking',
+  login: '/auth/login',
+  register: '/auth/register',
+  sellerRoot: '/seller',
+  deliveryRoot: '/delivery',
+  adminRoot: '/admin',
+}

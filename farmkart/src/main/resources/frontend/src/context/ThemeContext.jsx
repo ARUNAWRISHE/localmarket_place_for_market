@@ -1,7 +1,6 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { THEMES } from '../constants/theme.js'
-
-export const ThemeContext = createContext(null)
+import { ThemeContext } from './theme-context.js'
 
 export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(THEMES.LIGHT)

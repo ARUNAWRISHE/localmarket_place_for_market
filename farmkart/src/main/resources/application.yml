@@ -31,6 +31,8 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
       timeout: 2s
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 
 logging:
   level:
@@ -40,7 +42,7 @@ logging:
 app:
   security:
     jwt:
-      secret: ${JWT_SECRET:change-me-in-prod}
+      secret: ${JWT_SECRET:farmkart-local-development-jwt-secret-keep-this-at-least-32-bytes}
       issuer: ${JWT_ISSUER:farmkart}
       access-token-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:30}
       refresh-token-ttl-days: ${JWT_REFRESH_TTL_DAYS:30}
@@ -56,3 +58,8 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+
+management:
+  health:
+    redis:
+      enabled: false

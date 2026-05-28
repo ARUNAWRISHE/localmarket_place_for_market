@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +38,11 @@ public class GlobalExceptionHandler {
 		return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage());
 	}
 
+	@ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
+	public ResponseEntity<ApiResponse<Object>> handleBadCredentials(Exception ex) {
+		return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
@@ -53,7 +60,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Object>> handleGeneric(Exception ex) {
-		return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
+		return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 	}
 
 	private ResponseEntity<ApiResponse<Object>> buildResponse(HttpStatus status, String message) {

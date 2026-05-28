@@ -1,6 +1,5 @@
-import { createContext, useMemo, useReducer } from 'react'
-
-export const CartContext = createContext(null)
+import { useMemo, useReducer } from 'react'
+import { CartContext } from './cart-context.js'
 
 const initialState = {
   items: [],

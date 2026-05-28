@@ -1,6 +1,5 @@
-import { createContext, useMemo, useReducer } from 'react'
-
-export const OrdersContext = createContext(null)
+import { useMemo, useReducer } from 'react'
+import { OrdersContext } from './orders-context.js'
 
 const initialState = {
   orders: [],

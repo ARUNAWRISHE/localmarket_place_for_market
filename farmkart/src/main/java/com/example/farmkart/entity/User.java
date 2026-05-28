@@ -42,6 +42,10 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private boolean active = true;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role = Role.CUSTOMER;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
 	@Enumerated(EnumType.STRING)

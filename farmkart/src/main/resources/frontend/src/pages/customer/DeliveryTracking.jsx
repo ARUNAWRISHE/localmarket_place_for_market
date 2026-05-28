@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function DeliveryTracking() {
   const [minutesLeft, setMinutesLeft] = useState(12)
-  const [progress, setProgress] = useState(0.6)
+  const progressRef = useRef(0.6)
   const partnerIconRef = useRef(null)
   const routePathRef = useRef(null)
 
@@ -14,20 +14,18 @@ export default function DeliveryTracking() {
         setMinutesLeft((prev) => prev - 1)
       }
 
-      setProgress((prev) => {
-        let next = prev + 0.0008
-        if (next > 1) next = 0.6
+      let next = progressRef.current + 0.0008
+      if (next > 1) next = 0.6
+      progressRef.current = next
 
-        if (routePathRef.current && partnerIconRef.current) {
-          const totalLength = routePathRef.current.getTotalLength()
-          const point = routePathRef.current.getPointAtLength(next * totalLength)
-          partnerIconRef.current.setAttribute(
-            'transform',
-            `translate(${point.x}, ${point.y})`,
-          )
-        }
-        return next
-      })
+      if (routePathRef.current && partnerIconRef.current) {
+        const totalLength = routePathRef.current.getTotalLength()
+        const point = routePathRef.current.getPointAtLength(next * totalLength)
+        partnerIconRef.current.setAttribute(
+          'transform',
+          `translate(${point.x}, ${point.y})`,
+        )
+      }
 
       animationFrameId = requestAnimationFrame(updateProgress)
     }

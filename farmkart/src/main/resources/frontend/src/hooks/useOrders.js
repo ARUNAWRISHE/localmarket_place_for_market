@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { OrdersContext } from '../context/OrdersContext.jsx'
+import { OrdersContext } from '../context/orders-context.js'
 
 export default function useOrders() {
   const context = useContext(OrdersContext)

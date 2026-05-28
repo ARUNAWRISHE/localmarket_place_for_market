@@ -4,8 +4,16 @@ export function normalizeApiError(error) {
   }
 
   if (error.response) {
+    const details = error.response.data?.data
+    const validationMessage =
+      details && typeof details === 'object'
+        ? Object.entries(details)
+            .map(([field, message]) => `${field}: ${message}`)
+            .join(', ')
+        : null
+
     return {
-      message: error.response.data?.message || 'Request failed',
+      message: validationMessage || error.response.data?.message || 'Request failed',
       status: error.response.status,
       details: error.response.data,
     }

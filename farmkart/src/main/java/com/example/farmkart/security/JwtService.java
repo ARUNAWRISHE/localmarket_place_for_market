@@ -1,6 +1,7 @@
 package com.example.farmkart.security;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import com.example.farmkart.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.KeyException;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
@@ -27,8 +29,7 @@ public class JwtService {
 				.setSubject(subject)
 				.setIssuedAt(Date.from(now))
 				.setExpiration(Date.from(expires))
-				.signWith(Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8)),
-						SignatureAlgorithm.HS256)
+				.signWith(signingKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
 
@@ -40,8 +41,7 @@ public class JwtService {
 				.setSubject(subject)
 				.setIssuedAt(Date.from(now))
 				.setExpiration(Date.from(expires))
-				.signWith(Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8)),
-						SignatureAlgorithm.HS256)
+				.signWith(signingKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
 
@@ -60,9 +60,17 @@ public class JwtService {
 
 	private Claims getClaims(String token) {
 		return Jwts.parserBuilder()
-				.setSigningKey(Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8)))
+				.setSigningKey(signingKey())
 				.build()
 				.parseClaimsJws(token)
 				.getBody();
+	}
+
+	private Key signingKey() {
+		try {
+			return Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
+		} catch (KeyException ex) {
+			throw new IllegalStateException("JWT_SECRET must be at least 32 characters for HS256", ex);
+		}
 	}
 }

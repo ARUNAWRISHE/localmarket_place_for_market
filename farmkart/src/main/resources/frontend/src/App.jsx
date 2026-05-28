@@ -1,12 +1,7 @@
-import AppRoutes from './routes/AppRoutes.jsx'
-import AppProviders from './context/AppProviders.jsx'
+import AppShell from './app/AppShell.jsx'
 
 function App() {
-  return (
-    <AppProviders>
-      <AppRoutes />
-    </AppProviders>
-  )
+  return <AppShell />
 }
 
 export default App

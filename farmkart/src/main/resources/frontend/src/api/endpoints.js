@@ -1,8 +1,10 @@
-export const ENDPOINTS = {
+export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/login',
     register: '/api/auth/register',
-    profile: '/api/auth/profile',
+    refresh: '/api/auth/refresh',
+    logout: '/api/auth/logout',
+    profile: '/api/users/profile',
   },
   products: '/api/products',
   orders: '/api/orders',
@@ -11,3 +13,5 @@ export const ENDPOINTS = {
   seller: '/api/seller',
   admin: '/api/admin',
 }
+
+export const ENDPOINTS = API_ENDPOINTS

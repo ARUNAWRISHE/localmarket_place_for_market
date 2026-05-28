@@ -1,6 +1,7 @@
 package com.example.farmkart.service.impl;
 
 import java.time.Instant;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +13,7 @@ import com.example.farmkart.dto.auth.LoginRequest;
 import com.example.farmkart.dto.auth.LogoutRequest;
 import com.example.farmkart.dto.auth.RefreshRequest;
 import com.example.farmkart.dto.auth.RegisterRequest;
+import com.example.farmkart.constants.Role;
 import com.example.farmkart.entity.RefreshToken;
 import com.example.farmkart.entity.User;
 import com.example.farmkart.exception.BadRequestException;
@@ -44,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
 		user.setPhone(request.getPhone());
 		user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 		user.setRoles(request.getRoles());
+		user.setRole(request.getRoles().stream().findFirst().orElse(Role.CUSTOMER));
 		userRepository.save(user);
 
 		String accessToken = jwtService.generateAccessToken(user.getEmail());
@@ -51,9 +54,12 @@ public class AuthServiceImpl implements AuthService {
 		saveRefreshToken(user, refreshTokenValue);
 
 		return AuthResponse.builder()
+				.token(accessToken)
 				.accessToken(accessToken)
 				.refreshToken(refreshTokenValue)
 				.tokenType("Bearer")
+				.role(primaryRole(user))
+				.user(userPayload(user))
 				.build();
 	}
 
@@ -69,9 +75,12 @@ public class AuthServiceImpl implements AuthService {
 		saveRefreshToken(user, refreshTokenValue);
 
 		return AuthResponse.builder()
+				.token(accessToken)
 				.accessToken(accessToken)
 				.refreshToken(refreshTokenValue)
 				.tokenType("Bearer")
+				.role(primaryRole(user))
+				.user(userPayload(user))
 				.build();
 	}
 
@@ -90,9 +99,12 @@ public class AuthServiceImpl implements AuthService {
 		saveRefreshToken(stored.getUser(), refreshTokenValue);
 
 		return AuthResponse.builder()
+				.token(accessToken)
 				.accessToken(accessToken)
 				.refreshToken(refreshTokenValue)
 				.tokenType("Bearer")
+				.role(primaryRole(stored.getUser()))
+				.user(userPayload(stored.getUser()))
 				.build();
 	}
 
@@ -110,5 +122,20 @@ public class AuthServiceImpl implements AuthService {
 		refreshToken.setToken(token);
 		refreshToken.setExpiresAt(Instant.now().plusSeconds(30L * 24 * 3600));
 		refreshTokenRepository.save(refreshToken);
+	}
+
+	private String primaryRole(User user) {
+		return user.getRoles().stream()
+				.findFirst()
+				.map(Role::name)
+				.orElse(Role.CUSTOMER.name());
+	}
+
+	private Map<String, Object> userPayload(User user) {
+		return Map.of(
+				"id", user.getId(),
+				"fullName", user.getFullName(),
+				"email", user.getEmail(),
+				"roles", user.getRoles());
 	}
 }

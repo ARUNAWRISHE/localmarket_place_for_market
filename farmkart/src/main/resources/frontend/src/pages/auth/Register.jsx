@@ -25,7 +25,13 @@ export default function Register() {
         addToast({ title: 'Password mismatch', message: 'Please check again.' })
         return
       }
-      await register(form)
+      await register({
+        fullName: form.full_name,
+        email: form.email,
+        password: form.password,
+        phone: form.phone || null,
+        roles: [form.role],
+      })
       addToast({ title: 'Account created', message: 'Please sign in.' })
       navigate('/auth/login')
     } catch (error) {

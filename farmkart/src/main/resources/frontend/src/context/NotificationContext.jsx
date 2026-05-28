@@ -1,6 +1,5 @@
-import { createContext, useCallback, useMemo, useState } from 'react'
-
-export const NotificationContext = createContext(null)
+import { useCallback, useMemo, useState } from 'react'
+import { NotificationContext } from './notification-context.js'
 
 export default function NotificationProvider({ children }) {
   const [toasts, setToasts] = useState([])

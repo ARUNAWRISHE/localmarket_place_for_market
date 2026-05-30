@@ -9,12 +9,12 @@ const columns = [
 
 const data = [
   {
-    name: 'Organic Heirloom Tomatoes',
+    name: 'Tomato',
     category: 'Vegetables',
     stock: '85%',
-    price: '$4.50/lb',
+    price: '₹120/kg',
   },
-  { name: 'Raw Wildflower Honey', category: 'Pantry', stock: '12%', price: '$12.00' },
+  { name: 'A2 Milk', category: 'Dairy Products', stock: '12%', price: '₹95/L' },
 ]
 
 export default function ProductManagement() {

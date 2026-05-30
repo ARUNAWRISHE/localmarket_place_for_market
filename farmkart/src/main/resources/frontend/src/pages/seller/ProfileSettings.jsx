@@ -7,7 +7,7 @@ export default function ProfileSettings() {
           <label className="text-xs text-on-surface-variant">Farm Name</label>
           <input
             className="w-full mt-2 px-4 py-3 rounded-xl border border-outline-variant/40"
-            defaultValue="Green Valley Organics"
+            defaultValue="Kaveri Organic Farms"
           />
         </div>
         <div>
@@ -15,14 +15,14 @@ export default function ProfileSettings() {
           <textarea
             className="w-full mt-2 px-4 py-3 rounded-xl border border-outline-variant/40"
             rows="3"
-            defaultValue="Regenerative farm specializing in heirloom tomatoes and artisan greens."
+            defaultValue="Tamil Nadu farm specializing in native vegetables and dairy."
           />
         </div>
         <div>
           <label className="text-xs text-on-surface-variant">Contact Email</label>
           <input
             className="w-full mt-2 px-4 py-3 rounded-xl border border-outline-variant/40"
-            defaultValue="hello@greenvalley.farm"
+            defaultValue="hello@kaverifarms.in"
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -30,14 +30,14 @@ export default function ProfileSettings() {
             <label className="text-xs text-on-surface-variant">GST Number</label>
             <input
               className="w-full mt-2 px-4 py-3 rounded-xl border border-outline-variant/40"
-              defaultValue="GSTIN-29ABCDE1234F2Z5"
+              defaultValue="GSTIN-33ABCDE1234F2Z5"
             />
           </div>
           <div>
             <label className="text-xs text-on-surface-variant">Organic Certification</label>
             <input
               className="w-full mt-2 px-4 py-3 rounded-xl border border-outline-variant/40"
-              defaultValue="USDA Organic"
+              defaultValue="NPOP Organic"
             />
           </div>
         </div>

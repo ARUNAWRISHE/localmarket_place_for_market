@@ -58,6 +58,8 @@ The `db/` folder contains database assets and notes:
 
 - `dbschema.sql`: database schema definition
 - `auth_schema_fix.sql`: repair script for auth-related tables and fields
+- `migration_fixup.sql`: idempotent cleanup migration for legacy column/timestamp inconsistencies
+- `farm2kart_feature_migration.sql`: Farm2Kart feature migration (farm profiles, support/refunds/returns, delivery slots/proofs, enums, cleanup)
 - `README.md`: database-specific notes
 
 ## 4) Backend File Logic
@@ -185,11 +187,11 @@ The `constants` package defines enums for shared state:
 The route map is organized into these user areas:
 
 - public customer browsing: home, shop, categories, product details, search
-- protected customer flows: cart, checkout, orders, profile, wishlist, delivery tracking
-- auth: login and register pages
-- seller portal: dashboard, products, inventory, orders, revenue, messages, profile settings
-- delivery portal: active deliveries, routes, earnings, status, availability, notifications
-- admin portal: users, sellers, products, orders, analytics
+- protected customer flows: cart, checkout, orders, profile, wishlist, delivery tracking, support
+- auth: login, register, and forgot password pages
+- seller portal: dashboard, products, inventory, orders, revenue, messages, profile settings, farm profile, analytics
+- delivery portal: active deliveries, routes, earnings, status, availability, notifications, history
+- admin portal: users, sellers, products, orders, analytics, support, refunds
 
 ### Layouts
 
@@ -290,6 +292,8 @@ The `target/` directory contains compiled backend and frontend build output. It 
 - Backend logic is mostly organized by domain and should be edited in the source packages rather than in `target/`.
 - Frontend routing is already role-aware and uses a single app shell with layered providers.
 - Database access is expected to work against PostgreSQL/Supabase with auth schema alignment handled by the supplied SQL repair script.
+- Frontend to-do aligned file structure is now in place (including page-name wrappers and missing feature screens), and production build passes.
+- Current canonical DB structure is tracked in `db/dbschema.sql` (finalized reference schema).
 
 ## 10) Suggested Next Edits
 
@@ -305,14 +309,14 @@ If you want this document expanded further, the next useful additions would be:
 This project follows the roadmap in `to_do.md`. Summary of current progress:
 
 - Backend setup: completed (project builds). See `target/farmkart-0.0.1-SNAPSHOT.jar`.
-- Frontend setup: completed (npm packages installed in `src/main/resources/frontend`).
-- Database schema: not yet applied to a production DB; `db/auth_schema_fix.sql` is available to fix auth schema issues.
+- Frontend setup: completed (npm packages installed in `src/main/resources/frontend`, routes/pages aligned to current to-do structure, and `npm run build` successful).
+- Database schema: finalized reference captured in `db/dbschema.sql`; migration files are ready for controlled DB rollout.
 - Feature modules (auth, user, product, cart, order, payment, delivery, review, wishlist, support, refund, notification, admin): scaffolded in source — implementation varies per module and many controller/service classes exist in `src/main/java/com/example/farmkart` but still require testing, environment wiring, and data seeding.
 
 Next recommended actions:
 
 1. Provide or configure a running PostgreSQL/Supabase instance and set `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD` in `farmkart/.env` or your environment.
-2. Run the database migration or apply `db/dbschema.sql` and `db/auth_schema_fix.sql` in your DB.
+2. Run database rollout in order: `db/dbschema.sql` (baseline, if needed), `db/auth_schema_fix.sql`, then feature/cleanup migrations (`db/farm2kart_feature_migration.sql`, `db/migration_fixup.sql`) as required by environment state.
 3. Start backend with database reachable:
 
 ```bash
@@ -339,15 +343,19 @@ If you'd like, I can now: (A) generate a per-file appendix for all Java and Reac
 
 ## Database Migration Script
 
-I added a migration script to help fix the schema issues identified earlier: `db/migration_fixup.sql`.
+I added migration scripts to help fix schema issues and roll out Farm2Kart features:
 
-What it does:
+- `db/migration_fixup.sql` for timestamp/column/index normalization.
+- `db/farm2kart_feature_migration.sql` for Farm2Kart feature tables/fields and medium-priority cleanups.
+
+What they do:
 - Adds a `set_updated_at()` trigger function and ensures an `updated_at TIMESTAMPTZ` column exists for public tables.
 - Attempts safe conversions of `created_at`/`updated_at` to `timestamptz` where possible.
 - Reconciles duplicate columns (examples: `product_images.primary_image` -> `product_images.is_primary`; `carts.user_id` -> `carts.customer_id`; `notifications.read` -> `notifications.is_read`).
 - Populates `addresses.full_address` from component fields when empty.
 - Adds recommended indexes on `products`, `orders`, `product_reviews`, and `notifications`.
 - Adds a `users_role_check` constraint as `NOT VALID` for safety (validate after data cleanup).
+- Adds Farm2Kart feature schema: farm profiles/images, delivery slots, support tickets, refunds, returns, delivery proofs, districts, and related enums/foreign keys.
 
 How to run it (backup first):
 
@@ -355,13 +363,24 @@ How to run it (backup first):
 # create a backup
 pg_dump -h <host> -U <user> -d <db> -F c -f farmkart_pre_migration.dump
 
-# run the migration
+# run feature migration
+psql -h <host> -U <user> -d <db> -f db/farm2kart_feature_migration.sql
+
+# run cleanup migration
 psql -h <host> -U <user> -d <db> -f db/migration_fixup.sql
 ```
 
 Notes:
 - The script uses conditional checks and `DO` blocks to be idempotent and safe to run multiple times, but test in staging first.
 - After running, review NOTICE messages emitted by the script and validate data (especially `users.role`) before validating the `users_role_check` constraint.
+
+## 13) Latest Status Update (30 May 2026)
+
+- Database: finalized structure captured in `db/dbschema.sql`.
+- Database migrations: `db/farm2kart_feature_migration.sql` and `db/migration_fixup.sql` added and aligned to current schema direction.
+- Frontend: to-do aligned files/pages/components added for missing surfaces (support, refunds, farm profile, analytics, history, forgot password, delivery proof modal, and naming wrappers).
+- Frontend routing/layouts: updated to expose new pages in customer, seller, delivery, and admin sections.
+- Verification: frontend production build passed via `npm run build`.
 
 
 ## Completion Status

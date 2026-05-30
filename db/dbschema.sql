@@ -1,457 +1,442 @@
--- =========================================================
--- ORGANIC MARKETPLACE DATABASE SCHEMA
--- Flipkart-like Multi Vendor Organic Marketplace
--- PostgreSQL / Supabase Compatible
--- =========================================================
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
 
--- =========================================================
--- EXTENSIONS
--- =========================================================
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- =========================================================
--- USERS
--- =========================================================
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    full_name VARCHAR(150) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    role VARCHAR(20) NOT NULL CHECK (
-        role IN ('CUSTOMER', 'SELLER', 'DELIVERY', 'ADMIN')
-    ),
-    phone VARCHAR(20),
-    profile_image TEXT,
-    status VARCHAR(20) DEFAULT 'ACTIVE',
-    active BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.addresses (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  full_address text NOT NULL,
+  city character varying,
+  state character varying,
+  country character varying DEFAULT 'India'::character varying,
+  pincode character varying,
+  latitude numeric,
+  longitude numeric,
+  is_default boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  label character varying,
+  line1 character varying NOT NULL,
+  line2 character varying,
+  postal_code character varying NOT NULL,
+  CONSTRAINT addresses_pkey PRIMARY KEY (id),
+  CONSTRAINT addresses_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- ADDRESSES
--- =========================================================
-
-CREATE TABLE addresses (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    full_address TEXT NOT NULL,
-    city VARCHAR(100),
-    state VARCHAR(100),
-    country VARCHAR(100) DEFAULT 'India',
-    pincode VARCHAR(20),
-    latitude DECIMAL(10,8),
-    longitude DECIMAL(11,8),
-    is_default BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.admin_logs (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  admin_id uuid,
+  action character varying,
+  target_entity text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  details character varying,
+  CONSTRAINT admin_logs_pkey PRIMARY KEY (id),
+  CONSTRAINT admin_logs_admin_id_fkey FOREIGN KEY (admin_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- SELLERS
--- =========================================================
-
-CREATE TABLE sellers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-    shop_name VARCHAR(255) NOT NULL,
-    shop_description TEXT,
-    gst_number VARCHAR(50),
-    organic_certification TEXT,
-    verification_status VARCHAR(20) DEFAULT 'PENDING',
-    rating DECIMAL(2,1) DEFAULT 0,
-    total_reviews INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.cart_items (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  cart_id uuid,
+  product_id uuid,
+  quantity integer NOT NULL DEFAULT 1,
+  price numeric NOT NULL,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  price_at_add numeric NOT NULL,
+  CONSTRAINT cart_items_pkey PRIMARY KEY (id),
+  CONSTRAINT cart_items_cart_id_fkey FOREIGN KEY (cart_id) REFERENCES public.carts(id),
+  CONSTRAINT cart_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
 );
-
--- =========================================================
--- CATEGORIES
--- =========================================================
-
-CREATE TABLE categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(150) NOT NULL,
-    slug VARCHAR(150) UNIQUE NOT NULL,
-    icon TEXT,
-    banner_image TEXT,
-    parent_category_id UUID REFERENCES categories(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.carts (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid UNIQUE,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  CONSTRAINT carts_pkey PRIMARY KEY (id),
+  CONSTRAINT carts_customer_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- PRODUCTS
--- =========================================================
-
-CREATE TABLE products (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    seller_id UUID REFERENCES sellers(id) ON DELETE CASCADE,
-    category_id UUID REFERENCES categories(id),
-    name VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) UNIQUE NOT NULL,
-    short_description TEXT,
-    description TEXT,
-    brand VARCHAR(100),
-    sku VARCHAR(100),
-    weight DECIMAL(10,2),
-    price DECIMAL(10,2) NOT NULL,
-    discount_price DECIMAL(10,2),
-    stock_quantity INTEGER DEFAULT 0,
-    organic_certified BOOLEAN DEFAULT TRUE,
-    featured BOOLEAN DEFAULT FALSE,
-    average_rating DECIMAL(2,1) DEFAULT 0,
-    total_reviews INTEGER DEFAULT 0,
-    status VARCHAR(20) DEFAULT 'ACTIVE',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.categories (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  name character varying NOT NULL,
+  slug character varying NOT NULL UNIQUE,
+  icon text,
+  banner_image text,
+  parent_category_id uuid,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  CONSTRAINT categories_pkey PRIMARY KEY (id),
+  CONSTRAINT categories_parent_category_id_fkey FOREIGN KEY (parent_category_id) REFERENCES public.categories(id)
 );
-
--- =========================================================
--- PRODUCT IMAGES
--- =========================================================
-
-CREATE TABLE product_images (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    image_url TEXT NOT NULL,
-    is_primary BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.coupons (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  code character varying NOT NULL UNIQUE,
+  discount_type character varying,
+  discount_value numeric,
+  min_order_amount numeric,
+  expiry_date timestamp without time zone,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  active boolean,
+  discount_percentage numeric NOT NULL,
+  max_discount numeric,
+  valid_from timestamp with time zone,
+  valid_to timestamp with time zone,
+  CONSTRAINT coupons_pkey PRIMARY KEY (id)
 );
-
--- =========================================================
--- INVENTORY LOGS
--- =========================================================
-
-CREATE TABLE inventory_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    previous_stock INTEGER,
-    updated_stock INTEGER,
-    reason TEXT,
-    updated_by UUID REFERENCES users(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.deliveries (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  order_id uuid UNIQUE,
+  delivery_partner_id uuid,
+  pickup_time timestamp without time zone,
+  delivery_time timestamp without time zone,
+  current_status character varying DEFAULT 'PENDING'::character varying,
+  estimated_arrival timestamp without time zone,
+  live_location text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  assigned_at timestamp with time zone,
+  delivered_at timestamp with time zone,
+  status character varying NOT NULL CHECK (status::text = ANY (ARRAY['ASSIGNED'::character varying, 'PICKED_UP'::character varying, 'IN_TRANSIT'::character varying, 'OUT_FOR_DELIVERY'::character varying, 'DELIVERED'::character varying, 'CANCELLED'::character varying]::text[])),
+  CONSTRAINT deliveries_pkey PRIMARY KEY (id),
+  CONSTRAINT deliveries_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id),
+  CONSTRAINT deliveries_delivery_partner_id_fkey FOREIGN KEY (delivery_partner_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- CARTS
--- =========================================================
-
-CREATE TABLE carts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    customer_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.delivery_profiles (
+  id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL,
+  updated_at timestamp with time zone NOT NULL,
+  rating_average numeric,
+  vehicle_type character varying,
+  user_id uuid NOT NULL UNIQUE,
+  CONSTRAINT delivery_profiles_pkey PRIMARY KEY (id),
+  CONSTRAINT fk8ncjuxj3drgbp8m15j1d8wk3s FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- CART ITEMS
--- =========================================================
-
-CREATE TABLE cart_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    cart_id UUID REFERENCES carts(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.delivery_proofs (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  delivery_id uuid,
+  photo_url text,
+  signature_url text,
+  notes text,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT delivery_proofs_pkey PRIMARY KEY (id),
+  CONSTRAINT delivery_proofs_delivery_id_fkey FOREIGN KEY (delivery_id) REFERENCES public.deliveries(id)
 );
-
--- =========================================================
--- ORDERS
--- =========================================================
-
-CREATE TABLE orders (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    customer_id UUID REFERENCES users(id),
-    delivery_partner_id UUID REFERENCES users(id),
-    address_id UUID REFERENCES addresses(id),
-
-    order_number VARCHAR(50) UNIQUE NOT NULL,
-
-    subtotal DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) DEFAULT 0,
-    delivery_fee DECIMAL(10,2) DEFAULT 0,
-    total_amount DECIMAL(10,2) NOT NULL,
-
-    payment_status VARCHAR(20) DEFAULT 'PENDING',
-    order_status VARCHAR(30) DEFAULT 'PENDING',
-
-    placed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.delivery_reviews (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  delivery_partner_id uuid,
+  customer_id uuid,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  feedback text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  comment character varying,
+  delivery_id uuid NOT NULL,
+  reviewer_id uuid NOT NULL,
+  CONSTRAINT delivery_reviews_pkey PRIMARY KEY (id),
+  CONSTRAINT delivery_reviews_delivery_partner_id_fkey FOREIGN KEY (delivery_partner_id) REFERENCES public.users(id),
+  CONSTRAINT delivery_reviews_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.users(id),
+  CONSTRAINT fks3i1dnk98o8bwpla0ao6974k2 FOREIGN KEY (delivery_id) REFERENCES public.deliveries(id),
+  CONSTRAINT fkabg9oup3b1sipk0ilbth4a1s9 FOREIGN KEY (reviewer_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- ORDER ITEMS
--- =========================================================
-
-CREATE TABLE order_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES products(id),
-    seller_id UUID REFERENCES sellers(id),
-
-    quantity INTEGER NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    total DECIMAL(10,2) NOT NULL
+CREATE TABLE public.delivery_slots (
+  id bigint NOT NULL DEFAULT nextval('delivery_slots_id_seq'::regclass),
+  name text NOT NULL UNIQUE,
+  start_time time without time zone,
+  end_time time without time zone,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT delivery_slots_pkey PRIMARY KEY (id)
 );
-
--- =========================================================
--- PAYMENTS
--- =========================================================
-
-CREATE TABLE payments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-
-    payment_method VARCHAR(50),
-    transaction_id VARCHAR(255),
-    amount DECIMAL(10,2),
-
-    payment_status VARCHAR(20) DEFAULT 'PENDING',
-
-    paid_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.delivery_tracking_logs (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  delivery_id uuid,
+  latitude numeric,
+  longitude numeric,
+  tracking_message text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  recorded_at timestamp with time zone NOT NULL,
+  CONSTRAINT delivery_tracking_logs_pkey PRIMARY KEY (id),
+  CONSTRAINT delivery_tracking_logs_delivery_id_fkey FOREIGN KEY (delivery_id) REFERENCES public.deliveries(id)
 );
-
--- =========================================================
--- DELIVERIES
--- =========================================================
-
-CREATE TABLE deliveries (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    order_id UUID UNIQUE REFERENCES orders(id) ON DELETE CASCADE,
-    delivery_partner_id UUID REFERENCES users(id),
-
-    pickup_time TIMESTAMP,
-    delivery_time TIMESTAMP,
-
-    current_status VARCHAR(30) DEFAULT 'PENDING',
-
-    estimated_arrival TIMESTAMP,
-
-    live_location TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.districts (
+  id bigint NOT NULL DEFAULT nextval('districts_id_seq'::regclass),
+  name text NOT NULL UNIQUE,
+  state text DEFAULT 'Tamil Nadu'::text,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  updated_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT districts_pkey PRIMARY KEY (id)
 );
-
--- =========================================================
--- DELIVERY TRACKING LOGS
--- =========================================================
-
-CREATE TABLE delivery_tracking_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    delivery_id UUID REFERENCES deliveries(id) ON DELETE CASCADE,
-
-    latitude DECIMAL(10,8),
-    longitude DECIMAL(11,8),
-
-    tracking_message TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.farm_images (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  farm_profile_id uuid,
+  image_url text NOT NULL,
+  caption text,
+  is_primary boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT farm_images_pkey PRIMARY KEY (id),
+  CONSTRAINT farm_images_farm_profile_id_fkey FOREIGN KEY (farm_profile_id) REFERENCES public.farm_profiles(id)
 );
-
--- =========================================================
--- PRODUCT REVIEWS
--- =========================================================
-
-CREATE TABLE product_reviews (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    customer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-
-    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-
-    review TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.farm_profiles (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  farm_name text NOT NULL,
+  farmer_name text,
+  district text,
+  district_id bigint,
+  village text,
+  description text,
+  established_year integer,
+  organic_certified boolean DEFAULT false,
+  organic_certificate_no text,
+  rating numeric DEFAULT 0,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  updated_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT farm_profiles_pkey PRIMARY KEY (id),
+  CONSTRAINT farm_profiles_district_id_fkey FOREIGN KEY (district_id) REFERENCES public.districts(id)
 );
-
--- =========================================================
--- SELLER REVIEWS
--- =========================================================
-
-CREATE TABLE seller_reviews (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    seller_id UUID REFERENCES sellers(id) ON DELETE CASCADE,
-    customer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-
-    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-
-    review TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.inventory_logs (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  product_id uuid,
+  previous_stock integer,
+  updated_stock integer,
+  reason text,
+  updated_by uuid,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT inventory_logs_pkey PRIMARY KEY (id),
+  CONSTRAINT inventory_logs_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT inventory_logs_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
-
--- =========================================================
--- DELIVERY REVIEWS
--- =========================================================
-
-CREATE TABLE delivery_reviews (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    delivery_partner_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    customer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-
-    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-
-    feedback TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.notifications (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  title character varying,
+  message character varying,
+  type character varying,
+  is_read boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  CONSTRAINT notifications_pkey PRIMARY KEY (id),
+  CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- WISHLISTS
--- =========================================================
-
-CREATE TABLE wishlists (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    customer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.order_items (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  order_id uuid,
+  product_id uuid,
+  seller_id uuid,
+  quantity integer NOT NULL,
+  price numeric NOT NULL,
+  total numeric NOT NULL,
+  created_at timestamp with time zone NOT NULL,
+  updated_at timestamp with time zone NOT NULL,
+  CONSTRAINT order_items_pkey PRIMARY KEY (id),
+  CONSTRAINT order_items_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id),
+  CONSTRAINT order_items_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT order_items_seller_id_fkey FOREIGN KEY (seller_id) REFERENCES public.sellers(id)
 );
-
--- =========================================================
--- COUPONS
--- =========================================================
-
-CREATE TABLE coupons (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    code VARCHAR(50) UNIQUE NOT NULL,
-
-    discount_type VARCHAR(20),
-    discount_value DECIMAL(10,2),
-
-    min_order_amount DECIMAL(10,2),
-
-    expiry_date TIMESTAMP,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.orders (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  customer_id uuid,
+  delivery_partner_id uuid,
+  address_id uuid,
+  order_number character varying NOT NULL UNIQUE,
+  subtotal numeric NOT NULL,
+  tax_amount numeric DEFAULT 0,
+  delivery_fee numeric DEFAULT 0,
+  total_amount numeric NOT NULL,
+  payment_status character varying DEFAULT 'PENDING'::character varying,
+  placed_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  created_at timestamp with time zone NOT NULL,
+  status character varying NOT NULL CHECK (status::text = ANY (ARRAY['PENDING'::character varying, 'CONFIRMED'::character varying, 'PACKED'::character varying, 'SHIPPED'::character varying, 'OUT_FOR_DELIVERY'::character varying, 'DELIVERED'::character varying, 'CANCELLED'::character varying]::text[])),
+  user_id uuid NOT NULL,
+  delivery_slot_id bigint,
+  CONSTRAINT orders_pkey PRIMARY KEY (id),
+  CONSTRAINT orders_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.users(id),
+  CONSTRAINT orders_delivery_partner_id_fkey FOREIGN KEY (delivery_partner_id) REFERENCES public.users(id),
+  CONSTRAINT orders_address_id_fkey FOREIGN KEY (address_id) REFERENCES public.addresses(id),
+  CONSTRAINT fk32ql8ubntj5uh44ph9659tiih FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT fk_orders_delivery_slot FOREIGN KEY (delivery_slot_id) REFERENCES public.delivery_slots(id)
 );
-
--- =========================================================
--- NOTIFICATIONS
--- =========================================================
-
-CREATE TABLE notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-
-    title VARCHAR(255),
-    message TEXT,
-
-    type VARCHAR(50),
-
-    is_read BOOLEAN DEFAULT FALSE,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.payments (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  order_id uuid,
+  payment_method character varying,
+  transaction_id character varying,
+  amount numeric,
+  paid_at timestamp without time zone,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  provider character varying,
+  provider_reference character varying,
+  status character varying NOT NULL CHECK (status::text = ANY (ARRAY['PENDING'::character varying, 'AUTHORIZED'::character varying, 'PAID'::character varying, 'FAILED'::character varying, 'REFUNDED'::character varying]::text[])),
+  CONSTRAINT payments_pkey PRIMARY KEY (id),
+  CONSTRAINT payments_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id)
 );
-
--- =========================================================
--- ADMIN LOGS
--- =========================================================
-
-CREATE TABLE admin_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-    admin_id UUID REFERENCES users(id),
-
-    action TEXT,
-    target_entity TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.product_images (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  product_id uuid,
+  image_url character varying NOT NULL,
+  is_primary boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  CONSTRAINT product_images_pkey PRIMARY KEY (id),
+  CONSTRAINT product_images_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id)
 );
-
--- =========================================================
--- REFRESH TOKENS
--- =========================================================
-
-CREATE TABLE refresh_tokens (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token TEXT UNIQUE NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    revoked BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.product_reviews (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  product_id uuid,
+  customer_id uuid,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  review text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  comment character varying,
+  reviewer_id uuid NOT NULL,
+  CONSTRAINT product_reviews_pkey PRIMARY KEY (id),
+  CONSTRAINT product_reviews_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT product_reviews_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.users(id),
+  CONSTRAINT fkk3fbv680qghr3jfwb4xfbkr3g FOREIGN KEY (reviewer_id) REFERENCES public.users(id)
 );
-
--- =========================================================
--- AUTH SCHEMA REPAIR FOR EXISTING SUPABASE DATABASES
--- Run these manually if your database was created before auth fixes.
--- =========================================================
-
-ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER';
-
-ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';
-
-ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE;
-
-CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token TEXT UNIQUE NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    revoked BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE public.products (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  seller_id uuid,
+  category_id uuid,
+  name character varying NOT NULL,
+  slug character varying NOT NULL UNIQUE,
+  short_description text,
+  description character varying,
+  brand character varying,
+  sku character varying,
+  weight numeric,
+  price numeric NOT NULL,
+  discount_price numeric,
+  stock_quantity integer DEFAULT 0,
+  organic_certified boolean DEFAULT true,
+  featured boolean DEFAULT false,
+  average_rating numeric DEFAULT 0,
+  total_reviews integer DEFAULT 0,
+  status character varying DEFAULT 'ACTIVE'::character varying,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  rating_average numeric,
+  farm_profile_id uuid,
+  harvest_date date,
+  unit_type USER-DEFINED,
+  origin_district text,
+  origin_village text,
+  organic_certificate_no text,
+  CONSTRAINT products_pkey PRIMARY KEY (id),
+  CONSTRAINT products_seller_id_fkey FOREIGN KEY (seller_id) REFERENCES public.sellers(id),
+  CONSTRAINT products_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id),
+  CONSTRAINT fk_products_farm_profile FOREIGN KEY (farm_profile_id) REFERENCES public.farm_profiles(id)
 );
-
--- =========================================================
--- INDEXES
--- =========================================================
-
-CREATE INDEX idx_products_seller_id
-ON products(seller_id);
-
-CREATE INDEX idx_products_category_id
-ON products(category_id);
-
-CREATE INDEX idx_orders_customer_id
-ON orders(customer_id);
-
-CREATE INDEX idx_orders_delivery_partner_id
-ON orders(delivery_partner_id);
-
-CREATE INDEX idx_order_items_order_id
-ON order_items(order_id);
-
-CREATE INDEX idx_reviews_product_id
-ON product_reviews(product_id);
-
-CREATE INDEX idx_notifications_user_id
-ON notifications(user_id);
-
--- =========================================================
--- SAMPLE ORDER STATUS VALUES
--- =========================================================
--- PENDING
--- CONFIRMED
--- PACKED
--- SHIPPED
--- OUT_FOR_DELIVERY
--- DELIVERED
--- CANCELLED
-
--- =========================================================
--- SAMPLE PAYMENT STATUS VALUES
--- =========================================================
--- PENDING
--- PAID
--- FAILED
--- REFUNDED
-
--- =========================================================
--- SAMPLE DELIVERY STATUS VALUES
--- =========================================================
--- PENDING
--- PICKED_UP
--- ON_THE_WAY
--- DELIVERED
+CREATE TABLE public.refresh_tokens (
+  id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL,
+  updated_at timestamp with time zone NOT NULL,
+  expires_at timestamp with time zone NOT NULL,
+  revoked boolean NOT NULL,
+  token character varying NOT NULL UNIQUE,
+  user_id uuid NOT NULL,
+  CONSTRAINT refresh_tokens_pkey PRIMARY KEY (id),
+  CONSTRAINT fk1lih5y2npsf8u5o3vhdb9y0os FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.refunds (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  order_id uuid,
+  amount numeric NOT NULL,
+  reason text,
+  status USER-DEFINED DEFAULT 'REQUESTED'::refund_status,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  processed_at timestamp with time zone,
+  CONSTRAINT refunds_pkey PRIMARY KEY (id),
+  CONSTRAINT refunds_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id)
+);
+CREATE TABLE public.returns (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  order_id uuid,
+  reason text,
+  status USER-DEFINED DEFAULT 'REQUESTED'::return_status,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  processed_at timestamp with time zone,
+  CONSTRAINT returns_pkey PRIMARY KEY (id),
+  CONSTRAINT returns_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id)
+);
+CREATE TABLE public.seller_reviews (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  seller_id uuid,
+  customer_id uuid,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  review text,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  comment character varying,
+  reviewer_id uuid NOT NULL,
+  CONSTRAINT seller_reviews_pkey PRIMARY KEY (id),
+  CONSTRAINT seller_reviews_seller_id_fkey FOREIGN KEY (seller_id) REFERENCES public.sellers(id),
+  CONSTRAINT seller_reviews_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.users(id),
+  CONSTRAINT fk6d8cdi4pbc665blm5ixen9f9w FOREIGN KEY (reviewer_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.sellers (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid UNIQUE,
+  shop_name character varying NOT NULL,
+  shop_description text,
+  gst_number character varying,
+  organic_certification text,
+  verification_status character varying DEFAULT 'PENDING'::character varying,
+  rating numeric DEFAULT 0,
+  total_reviews integer DEFAULT 0,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  business_name character varying NOT NULL,
+  rating_average numeric,
+  verified boolean NOT NULL,
+  seller_type USER-DEFINED DEFAULT 'FARMER'::seller_type,
+  CONSTRAINT sellers_pkey PRIMARY KEY (id),
+  CONSTRAINT sellers_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.support_tickets (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid,
+  order_id uuid,
+  subject text NOT NULL,
+  description text,
+  priority USER-DEFINED DEFAULT 'MEDIUM'::ticket_priority,
+  status USER-DEFINED DEFAULT 'OPEN'::ticket_status,
+  created_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  updated_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT support_tickets_pkey PRIMARY KEY (id),
+  CONSTRAINT support_tickets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT support_tickets_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id)
+);
+CREATE TABLE public.user_roles (
+  user_id uuid NOT NULL,
+  role character varying NOT NULL CHECK (role::text = ANY (ARRAY['CUSTOMER'::character varying, 'SELLER'::character varying, 'DELIVERY'::character varying, 'ADMIN'::character varying]::text[])),
+  updated_at timestamp with time zone DEFAULT timezone('UTC'::text, now()),
+  CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role),
+  CONSTRAINT fkhfh9dx7w3ubf1co1vdev94g3f FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  full_name character varying NOT NULL,
+  email character varying NOT NULL UNIQUE,
+  password_hash character varying NOT NULL,
+  role character varying NOT NULL CHECK (role::text = ANY (ARRAY['CUSTOMER'::character varying::text, 'SELLER'::character varying::text, 'DELIVERY'::character varying::text, 'ADMIN'::character varying::text])),
+  phone character varying,
+  profile_image text,
+  status character varying DEFAULT 'ACTIVE'::character varying,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  active boolean NOT NULL,
+  profile_image_url character varying,
+  CONSTRAINT users_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.wishlists (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  product_id uuid,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL,
+  user_id uuid NOT NULL,
+  CONSTRAINT wishlists_pkey PRIMARY KEY (id),
+  CONSTRAINT wishlists_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id),
+  CONSTRAINT fk330pyw2el06fn5g28ypyljt16 FOREIGN KEY (user_id) REFERENCES public.users(id)
+);

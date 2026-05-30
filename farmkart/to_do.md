@@ -1,682 +1,753 @@
-# MASTER DEVELOPMENT PROMPT – FARM2KART
+Based on your current database and Farm2Kart vision, here is the **Frontend To-Do List** in the exact order I would implement it.
 
-You are a Senior Full-Stack Software Architect, Product Architect, UI/UX Designer, Database Architect, Spring Boot Architect, and React Architect.
+# 🎯 Frontend Progress
 
-Your task is to build a production-ready application called **Farm2Kart**.
-
-Do not create demo-level code.
-
-Generate enterprise-grade code, architecture, documentation, APIs, database design, reusable components, services, and business logic.
-
----
-
-# PROJECT INFORMATION
-
-Project Name:
-Farm2Kart
-
-Tagline:
-Farm Fresh from Tamil Nadu to Your Home
-
-Project Type:
-Multi-Vendor Organic Marketplace Platform
-
-Region:
-Tamil Nadu Only
-
-Currency:
-Indian Rupee (₹)
-
-Architecture:
-
-Frontend:
-
-* React
-* Vite
-* Tailwind CSS
-* React Router DOM
-* Redux Toolkit
-* Axios
-* Framer Motion
-
-Backend:
-
-* Spring Boot 3
-* Spring Security
-* JWT Authentication
-* Spring Data JPA
-* Swagger/OpenAPI
-* Maven
-
-Database:
-
-* Supabase PostgreSQL
+```text
+Current: ~40-50%
+Target: 100%
+```
 
 ---
 
-# BUSINESS OBJECTIVE
+# Phase 1 — Core Setup
 
-Farm2Kart connects:
+## Project Configuration
 
-* Farmers
-* Dairy Producers
-* FPOs
-* Cooperative Societies
-* Organic Stores
+* [ ] Configure React + Vite
+* [ ] Configure Tailwind CSS
+* [ ] Configure React Router
+* [ ] Configure Axios
+* [ ] Configure Redux Toolkit
+* [ ] Configure Toast Notifications
+* [ ] Configure Environment Variables
 
-with
+### Files
 
-* Customers
-
-through
-
-* Seller Portal
-* Customer Marketplace
-* Delivery Partner Portal
-* Admin Portal
-
-The platform operates exclusively within Tamil Nadu.
-
----
-
-# USER ROLES
-
-Implement complete role-based access control.
-
-Roles:
-
-CUSTOMER
-SELLER
-DELIVERY
-ADMIN
-
-All routes, APIs, pages, and permissions must be role-protected.
+```text
+src/api/axios.js
+src/api/endpoints.js
+src/store/index.js
+src/routes/AppRoutes.jsx
+src/main.jsx
+```
 
 ---
 
-# PRODUCT CATEGORIES
+# Phase 2 — Layout System
 
-Create categories exactly as follows.
+## Customer Layout
 
-## Vegetables
+* [ ] Navbar
+* [ ] Footer
+* [ ] Mobile Navigation
+* [ ] Search Bar
 
-### Leafy Vegetables
+### Files
 
-* Spinach
-* Moringa Leaves
-* Coriander
-* Mint
+```text
+layouts/CustomerLayout.jsx
 
-### Root Vegetables
-
-* Carrot
-* Beetroot
-* Radish
-* Sweet Potato
-
-### Common Vegetables
-
-* Tomato
-* Onion
-* Potato
-* Brinjal
-* Lady Finger
-* Cabbage
-* Cauliflower
-
-### Native Tamil Nadu Vegetables
-
-* Drumstick
-* Snake Gourd
-* Ridge Gourd
-* Bitter Gourd
-* Cluster Beans
+components/navigation/
+├── Navbar.jsx
+├── Footer.jsx
+├── SearchBar.jsx
+├── MobileMenu.jsx
+```
 
 ---
 
-## Fruits
+## Seller Layout
 
-### Local Fruits
+### Files
 
-* Banana
-* Mango
-* Guava
-* Papaya
-* Sapota
+```text
+layouts/SellerLayout.jsx
 
-### Seasonal Fruits
-
-* Watermelon
-* Muskmelon
-* Jackfruit
-
-### Premium Fruits
-
-* Apple
-* Orange
-* Grapes
-* Pomegranate
+components/seller/
+├── SellerSidebar.jsx
+├── SellerNavbar.jsx
+```
 
 ---
 
-## Pulses & Grains
+## Delivery Layout
 
-### Pulses
+### Files
 
-* Toor Dal
-* Urad Dal
-* Moong Dal
-* Chana Dal
-* Horse Gram
-
-### Grains
-
-* Rice
-* Traditional Rice Varieties
-
-### Millets
-
-* Ragi
-* Kambu
-* Thinai
-* Varagu
-* Samai
+```text
+layouts/DeliveryLayout.jsx
+```
 
 ---
 
-## Dairy Products
+## Admin Layout
 
-### Fresh Dairy
+### Files
 
-* Milk
-* Curd
-* Buttermilk
-
-### Processed Dairy
-
-* Paneer
-* Butter
-* Ghee
-
-### Farm Fresh
-
-* Cow Milk
-* A2 Milk
-* Organic Ghee
+```text
+layouts/AdminLayout.jsx
+```
 
 ---
 
-## Other
+# Phase 3 — Authentication
 
-Custom seller-approved products.
+## Pages
+
+* [ ] Login
+* [ ] Register
+* [ ] Forgot Password
+
+### Files
+
+```text
+features/auth/pages/
+
+LoginPage.jsx
+RegisterPage.jsx
+ForgotPasswordPage.jsx
+```
+
+### API
+
+```text
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+```
 
 ---
 
-# PRODUCT MODEL REQUIREMENTS
+# Phase 4 — Customer Marketplace
 
-Every product must contain:
+---
 
-* Product Name
+## Home Page
+
+### Sections
+
+* [ ] Hero Banner
+* [ ] Categories
+* [ ] Fresh Today
+* [ ] Tamil Nadu Specials
+* [ ] Top Rated
+* [ ] Seasonal Products
+* [ ] Nearby Farms
+
+### Files
+
+```text
+pages/customer/HomePage.jsx
+```
+
+---
+
+## Categories Page
+
+### Files
+
+```text
+pages/customer/CategoriesPage.jsx
+```
+
+### Categories
+
+#### Vegetables
+
+* Leafy Vegetables
+* Root Vegetables
+* Common Vegetables
+* Native Tamil Nadu Vegetables
+
+#### Fruits
+
+* Local Fruits
+* Seasonal Fruits
+* Premium Fruits
+
+#### Pulses & Grains
+
+* Pulses
+* Grains
+* Millets
+
+#### Dairy Products
+
+* Fresh Dairy
+* Processed Dairy
+* Farm Fresh
+
+#### Other
+
+---
+
+## Shop Page
+
+### Features
+
+* [ ] Search
+* [ ] Filter
+* [ ] Sort
+* [ ] Pagination
+
+### Filters
+
 * Category
-* Subcategory
-* Description
-* Images
-* Seller
-* Farm Name
-* Farmer Name
 * District
-* Village
-* Harvest Date
-* Organic Certification Status
-* Unit Type
-* Stock Quantity
 * Price
-* Discount Price
 * Rating
-* Reviews
+* Organic Certified
+* Seller Type
 
-Supported Units:
+### Files
 
-* kg
-* g
-* litre
-* ml
-* bunch
-* piece
-* pack
+```text
+pages/customer/ShopPage.jsx
 
-Examples:
-
-₹40/kg
-₹65/litre
-₹15/bunch
+components/products/
+├── ProductCard.jsx
+├── ProductGrid.jsx
+├── ProductFilters.jsx
+├── ProductSearch.jsx
+```
 
 ---
 
-# CUSTOMER MODULE
+## Product Details
 
-Generate:
+### Features
 
-HomePage
-ShopPage
-CategoryPage
-ProductDetailsPage
-SearchPage
-CartPage
-CheckoutPage
-OrdersPage
-WishlistPage
-ProfilePage
-SupportPage
-
-Features:
-
-* Search
-* Filters
-* Cart
-* Checkout
-* Wishlist
+* Images
 * Reviews
 * Ratings
-* Profile
-* Notifications
+* Farm Profile
+* Seller Profile
+* Harvest Date
+* Origin District
+* Delivery Estimate
+
+### Files
+
+```text
+pages/customer/ProductDetailsPage.jsx
+```
 
 ---
 
-# ORDERS MODULE
+# Phase 5 — Cart & Checkout
 
-Generate:
+## Cart
 
-CurrentOrders
-OrderHistory
-TrackOrder
-RefundRequests
+### Files
 
-Statuses:
+```text
+pages/customer/CartPage.jsx
+```
 
-PENDING
-CONFIRMED
-PACKED
-OUT_FOR_DELIVERY
-DELIVERED
-CANCELLED
+### Features
 
-Customer Actions:
+* Add Item
+* Remove Item
+* Update Quantity
 
-* View Order
-* Track Order
-* Cancel Order
+---
+
+## Checkout
+
+### Files
+
+```text
+pages/customer/CheckoutPage.jsx
+```
+
+### Features
+
+* Address Selection
+* Delivery Slot
+
+```text
+Morning
+Afternoon
+Evening
+```
+
+* Payment Selection
+* Order Summary
+
+---
+
+# Phase 6 — Orders
+
+## Orders Dashboard
+
+### Files
+
+```text
+pages/customer/OrdersPage.jsx
+```
+
+---
+
+## Current Orders
+
+### Files
+
+```text
+features/orders/CurrentOrders.jsx
+```
+
+### Features
+
+* Pending
+* Confirmed
+* Packed
+* Out For Delivery
+
+Actions:
+
+* View
+* Track
+* Cancel
+
+---
+
+## Order History
+
+### Files
+
+```text
+features/orders/OrderHistory.jsx
+```
+
+### Features
+
+* Delivered
+* Cancelled
+
+Actions:
+
 * Download Invoice
-* Request Refund
-
-Cancellation Rules:
-
-Allowed:
-
-* PENDING
-* CONFIRMED
-
-Blocked:
-
-* PACKED
-* OUT_FOR_DELIVERY
-* DELIVERED
+* Review Product
 
 ---
 
-# SELLER MODULE
+## Track Orders
 
-Generate:
+### Files
 
-SellerDashboard
-ProductsPage
-InventoryPage
-OrdersPage
-RevenuePage
-AnalyticsPage
-FarmProfilePage
+```text
+features/orders/TrackOrder.jsx
+```
 
-Features:
+### Features
+
+* Live Status
+* ETA
+* Delivery Partner
+* Timeline
+
+---
+
+## Refund Requests
+
+### Files
+
+```text
+features/orders/RefundRequests.jsx
+```
+
+---
+
+# Phase 7 — Profile
+
+## Profile Page
+
+### Files
+
+```text
+pages/customer/ProfilePage.jsx
+```
+
+### Features
+
+* Profile Info
+* Address Book
+* Order Stats
+* Logout
+
+Quick Actions:
+
+* Orders
+* Wishlist
+* Support
+* Settings
+
+---
+
+# Phase 8 — Wishlist
+
+### Files
+
+```text
+pages/customer/WishlistPage.jsx
+```
+
+### Features
+
+* Add
+* Remove
+* Move To Cart
+
+---
+
+# Phase 9 — Support
+
+### Files
+
+```text
+pages/customer/SupportPage.jsx
+```
+
+### Features
+
+* Create Ticket
+* Ticket History
+* Status Tracking
+
+---
+
+# Phase 10 — Seller Portal
+
+---
+
+## Seller Dashboard
+
+### Files
+
+```text
+pages/seller/DashboardPage.jsx
+```
+
+### Widgets
+
+* Revenue
+* Orders
+* Products
+* Reviews
+
+---
+
+## Product Management
+
+### Files
+
+```text
+pages/seller/ProductsPage.jsx
+```
+
+### Features
 
 * Add Product
 * Edit Product
 * Delete Product
-* Upload Images
-* Manage Inventory
-* Manage Orders
-* Revenue Analytics
-* Ratings Analytics
-
-Seller Types:
-
-* Farmer
-* Dairy Farm
-* FPO
-* Cooperative Society
-* Organic Store
-
-Verification Status:
-
-* Pending
-* Under Review
-* Verified
-* Rejected
-* Suspended
 
 ---
 
-# FARM PROFILE MODULE
+## Inventory
 
-Create dedicated farm profile management.
+### Files
 
-Fields:
+```text
+pages/seller/InventoryPage.jsx
+```
+
+### Features
+
+* Stock
+* Low Stock Alerts
+
+---
+
+## Orders
+
+### Files
+
+```text
+pages/seller/OrdersPage.jsx
+```
+
+### Features
+
+* Process Orders
+* Update Status
+
+---
+
+## Farm Profile
+
+### Files
+
+```text
+pages/seller/FarmProfilePage.jsx
+```
+
+### Features
 
 * Farm Name
-* Farmer Name
 * District
 * Village
-* Description
-* Farm Images
+* Images
 * Organic Certificate
-* Established Year
-* Rating
 
 ---
 
-# DELIVERY MODULE
+## Analytics
 
-Generate:
+### Files
 
-Dashboard
-ActiveDeliveries
-RoutesPage
-EarningsPage
-HistoryPage
-AvailabilityPage
-NotificationsPage
+```text
+pages/seller/AnalyticsPage.jsx
+```
 
-Features:
+### Metrics
+
+* Revenue
+* Top Products
+* Reviews
+
+---
+
+# Phase 11 — Delivery Portal
+
+---
+
+## Dashboard
+
+### Files
+
+```text
+pages/delivery/DashboardPage.jsx
+```
+
+---
+
+## Active Deliveries
+
+### Files
+
+```text
+pages/delivery/ActiveDeliveries.jsx
+```
+
+### Features
 
 * Accept Delivery
 * Update Status
-* Route Tracking
-* Live Tracking
-* Earnings
-* Delivery Proof
-
-Statuses:
-
-PENDING
-PICKED_UP
-ON_THE_WAY
-DELIVERED
-
-Delivery Proof:
-
-* Photo Upload
-* Customer Signature
-* Delivery Notes
 
 ---
 
-# SUPPORT MODULE
+## Earnings
 
-Generate:
+### Files
 
-Support Center
-
-Ticket Types:
-
-* Product Issue
-* Delivery Issue
-* Refund Issue
-* Payment Issue
-* General Inquiry
-
-Statuses:
-
-* Open
-* In Progress
-* Resolved
-* Closed
+```text
+pages/delivery/EarningsPage.jsx
+```
 
 ---
 
-# REFUND MODULE
+## History
 
-Generate:
+### Files
 
-Refund Requests
-Refund Management
-
-Statuses:
-
-* Requested
-* Approved
-* Rejected
-* Refunded
-
-Reasons:
-
-* Damaged Product
-* Wrong Product
-* Missing Items
-* Poor Quality
+```text
+pages/delivery/HistoryPage.jsx
+```
 
 ---
 
-# REVIEW SYSTEM
+## Delivery Proof Upload
 
-Generate:
+### Files
 
-Product Reviews
-Seller Reviews
-Delivery Reviews
+```text
+components/delivery/DeliveryProofModal.jsx
+```
 
-Rating:
+### Features
 
-1–5 Stars
-
-Support:
-
-* Text Review
-* Image Review
+* Upload Photo
+* Upload Signature
+* Notes
 
 ---
 
-# ADMIN MODULE
-
-Generate:
-
-Dashboard
-Users
-Sellers
-Products
-Orders
-Support
-Refunds
-Analytics
-
-Features:
-
-* Seller Verification
-* Product Moderation
-* User Management
-* Refund Approval
-* Support Management
-* Category Management
+# Phase 12 — Admin Portal
 
 ---
 
-# DATABASE REQUIREMENTS
+## Dashboard
 
-Generate:
+### Files
 
-users
-refresh_tokens
-
-sellers
-seller_verifications
-farm_profiles
-
-categories
-products
-product_images
-inventory_logs
-
-carts
-cart_items
-
-orders
-order_items
-
-payments
-coupons
-
-deliveries
-delivery_tracking_logs
-delivery_proofs
-delivery_slots
-
-product_reviews
-seller_reviews
-delivery_reviews
-
-wishlists
-addresses
-notifications
-
-support_tickets
-refunds
-returns
-
-admin_logs
-
-Use:
-
-* UUID Primary Keys
-* Foreign Keys
-* Indexes
-* Constraints
-* Audit Fields
+```text
+pages/admin/DashboardPage.jsx
+```
 
 ---
 
-# SPRING BOOT REQUIREMENTS
+## User Management
 
-Generate:
+### Files
 
-Controllers
-Services
-Repositories
-Entities
-DTOs
-Mappers
-Security
-Config
-Exception Handling
-
-Implement:
-
-* JWT Authentication
-* Refresh Tokens
-* Role Authorization
-* Validation
-* Swagger Documentation
-* Standard API Responses
+```text
+pages/admin/UsersPage.jsx
+```
 
 ---
 
-# REACT REQUIREMENTS
+## Seller Verification
 
-Generate:
+### Files
 
-* Reusable Components
-* Layouts
-* Protected Routes
-* Role Routes
-* API Services
-* Redux Slices
-* Hooks
-* Context Providers
+```text
+pages/admin/SellersPage.jsx
+```
 
-Use:
+### Features
 
-* Responsive Design
-* Mobile First Approach
-* Tailwind CSS
-* Framer Motion
+* Verify
+* Reject
+* Suspend
 
 ---
 
-# UI REQUIREMENTS
+## Product Moderation
 
-Brand:
-Farm2Kart
+### Files
 
-Theme:
-Organic Tamil Nadu Marketplace
-
-Footer:
-
-Farm2Kart
-Farm Fresh from Tamil Nadu to Your Home
-
-Created By:
-Arunaw Rishe M
-
-Email:
-[arunawrishe@gmail.com](mailto:arunawrishe@gmail.com)
-
-Remove all sample products.
-
-Products must only appear after sellers create them.
-
-Default Marketplace State:
-
-"No products available yet. Products will appear once sellers publish them."
+```text
+pages/admin/ProductsPage.jsx
+```
 
 ---
 
-# TESTING REQUIREMENTS
+## Support Management
 
-Generate:
+### Files
 
-* Unit Tests
-* Integration Tests
-* API Tests
-* Security Tests
-* Frontend Tests
-
-Validate:
-
-* Customer Flow
-* Seller Flow
-* Delivery Flow
-* Admin Flow
+```text
+pages/admin/SupportPage.jsx
+```
 
 ---
 
-# DEFINITION OF DONE
+## Refund Management
 
-The project is complete only when:
+### Files
 
-* Database completed
-* Backend completed
-* Frontend completed
-* Authentication working
-* Product management working
-* Cart working
-* Orders working
-* Reviews working
-* Delivery working
-* Support working
-* Refunds working
-* Admin portal working
-* Seller portal working
-* Delivery portal working
-* Mobile responsive
-* Production build successful
-* Documentation completed
+```text
+pages/admin/RefundsPage.jsx
+```
 
-Generate all code, architecture, file structure, APIs, database schema, UI, and documentation necessary to reach 100% project completion.
+---
+
+# Phase 13 — Shared Components
+
+## UI Components
+
+```text
+components/ui/
+
+Button.jsx
+Input.jsx
+Card.jsx
+Badge.jsx
+Modal.jsx
+Table.jsx
+Pagination.jsx
+Avatar.jsx
+```
+
+---
+
+# Phase 14 — API Integration
+
+Connect all APIs:
+
+```text
+Auth APIs
+Product APIs
+Category APIs
+Cart APIs
+Order APIs
+Review APIs
+Wishlist APIs
+Support APIs
+Refund APIs
+Delivery APIs
+Admin APIs
+```
+
+---
+
+# Phase 15 — Testing
+
+## Customer Flow
+
+* [ ] Register
+* [ ] Login
+* [ ] Browse Products
+* [ ] Add Cart
+* [ ] Checkout
+* [ ] Track Order
+
+---
+
+## Seller Flow
+
+* [ ] Create Farm
+* [ ] Add Product
+* [ ] Manage Inventory
+
+---
+
+## Delivery Flow
+
+* [ ] Accept Delivery
+* [ ] Upload Proof
+* [ ] Complete Delivery
+
+---
+
+## Admin Flow
+
+* [ ] Verify Seller
+* [ ] Manage Refunds
+* [ ] Resolve Tickets
+
+---
+
+# 🚀 Definition of Done
+
+```text
+Authentication           ✅
+Marketplace              ✅
+Categories               ✅
+Cart                     ✅
+Checkout                 ✅
+Orders                   ✅
+Tracking                 ✅
+Wishlist                 ✅
+Support                  ✅
+Refunds                  ✅
+Seller Portal            ✅
+Farm Profiles            ✅
+Delivery Portal          ✅
+Admin Portal             ✅
+API Integration          ✅
+Responsive Design        ✅
+Testing                  ✅
+```
+
+After completing this list, your **Farm2Kart React frontend will be production-ready and fully aligned with your database and Spring Boot backend.**

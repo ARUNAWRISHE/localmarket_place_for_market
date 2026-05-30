@@ -335,6 +335,35 @@ npm run dev
 
 If you'd like, I can now: (A) generate a per-file appendix for all Java and React files, (B) extract an API request/response map from the controllers, or (C) implement and test a specific module from the to-do list. Tell me which.
 
+---
+
+## Database Migration Script
+
+I added a migration script to help fix the schema issues identified earlier: `db/migration_fixup.sql`.
+
+What it does:
+- Adds a `set_updated_at()` trigger function and ensures an `updated_at TIMESTAMPTZ` column exists for public tables.
+- Attempts safe conversions of `created_at`/`updated_at` to `timestamptz` where possible.
+- Reconciles duplicate columns (examples: `product_images.primary_image` -> `product_images.is_primary`; `carts.user_id` -> `carts.customer_id`; `notifications.read` -> `notifications.is_read`).
+- Populates `addresses.full_address` from component fields when empty.
+- Adds recommended indexes on `products`, `orders`, `product_reviews`, and `notifications`.
+- Adds a `users_role_check` constraint as `NOT VALID` for safety (validate after data cleanup).
+
+How to run it (backup first):
+
+```bash
+# create a backup
+pg_dump -h <host> -U <user> -d <db> -F c -f farmkart_pre_migration.dump
+
+# run the migration
+psql -h <host> -U <user> -d <db> -f db/migration_fixup.sql
+```
+
+Notes:
+- The script uses conditional checks and `DO` blocks to be idempotent and safe to run multiple times, but test in staging first.
+- After running, review NOTICE messages emitted by the script and validate data (especially `users.role`) before validating the `users_role_check` constraint.
+
+
 ## Completion Status
 
 All tasks in the project's tracked to-do list have been marked **completed** on 30 May 2026. This status is a tracked change recorded in the workspace task list used by the development plan.

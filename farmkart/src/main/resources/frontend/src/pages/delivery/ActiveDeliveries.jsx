@@ -1,6 +1,6 @@
 const active = [
-  { id: 'ORD-2841', eta: '12 mins', distance: '2.4 km', address: '841 Organic Way' },
-  { id: 'ORD-2902', eta: '24 mins', distance: '4.8 km', address: '12 Harvest Lane' },
+  { id: 'ORD-2841', eta: '12 mins', distance: '2.4 km', address: '38, T. Nagar, Chennai' },
+  { id: 'ORD-2902', eta: '24 mins', distance: '4.8 km', address: '6, RS Puram, Coimbatore' },
 ]
 
 export default function ActiveDeliveries() {

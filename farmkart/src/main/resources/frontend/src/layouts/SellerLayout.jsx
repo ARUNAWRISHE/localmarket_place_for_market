@@ -15,7 +15,7 @@ const items = [
 export default function SellerLayout() {
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar title="Seller Hub" subtitle="Green Valley Organics" items={items} />
+      <Sidebar title="Seller Hub" subtitle="Tamil Nadu Vendors" items={items} />
       <main className="md:ml-64 px-4 md:px-margin-desktop py-8">
         <Outlet />
       </main>

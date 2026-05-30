@@ -24,7 +24,7 @@ export default function Login() {
     <div className="w-full max-w-md bg-white shadow-card rounded-3xl p-8">
       <h2 className="font-literata text-2xl text-primary mb-2">Welcome back</h2>
       <p className="text-sm text-on-surface-variant mb-6">
-        Sign in to access your marketplace.
+        Sign in to access Farm2Kart.
       </p>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input

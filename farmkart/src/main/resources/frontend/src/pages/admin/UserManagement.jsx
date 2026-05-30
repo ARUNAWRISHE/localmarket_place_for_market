@@ -1,6 +1,6 @@
 const users = [
   { id: 'U-1021', name: 'Ava Patel', role: 'Customer' },
-  { id: 'U-1022', name: 'Green Valley Organics', role: 'Seller' },
+  { id: 'U-1022', name: 'Kanchipuram Organic Farms', role: 'Seller' },
 ]
 
 export default function UserManagement() {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { formatCurrency } from '../../utils/formatters.js'
 
 export default function DeliveryTracking() {
   const [minutesLeft, setMinutesLeft] = useState(12)
@@ -77,14 +78,14 @@ export default function DeliveryTracking() {
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-white rounded-3xl shadow-card p-6">
             <h3 className="font-semibold mb-2">Delivery Partner</h3>
-            <p className="text-on-surface-variant text-sm">Rahul S. • 4.9 rating</p>
+            <p className="text-on-surface-variant text-sm">Kavya S. • 4.9 rating</p>
           </div>
           <div className="bg-white rounded-3xl shadow-card p-6">
             <h3 className="font-semibold mb-2">Order Summary</h3>
-            <p className="text-on-surface-variant text-sm">Organic Strawberries, Eggs</p>
+            <p className="text-on-surface-variant text-sm">Tomato, Curd, Drumstick</p>
             <div className="mt-4 flex justify-between font-semibold">
               <span>Total</span>
-              <span className="text-primary">$28.50</span>
+              <span className="text-primary">{formatCurrency(680)}</span>
             </div>
           </div>
         </div>

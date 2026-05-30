@@ -3,8 +3,7 @@ package com.example.farmkart.service.impl;
 import java.time.Instant;
 import java.util.Map;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
 	private final UserRepository userRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
 
 	@Override
@@ -65,11 +63,10 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public AuthResponse login(LoginRequest request) {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-
 		User user = userRepository.findByEmail(request.getEmail())
 				.orElseThrow(() -> new NotFoundException("User not found"));
+		verifyPassword(request.getPassword(), user);
+
 		String accessToken = jwtService.generateAccessToken(user.getEmail());
 		String refreshTokenValue = jwtService.generateRefreshToken(user.getEmail());
 		saveRefreshToken(user, refreshTokenValue);
@@ -122,6 +119,20 @@ public class AuthServiceImpl implements AuthService {
 		refreshToken.setToken(token);
 		refreshToken.setExpiresAt(Instant.now().plusSeconds(30L * 24 * 3600));
 		refreshTokenRepository.save(refreshToken);
+	}
+
+	private void verifyPassword(String rawPassword, User user) {
+		if (passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
+			return;
+		}
+
+		if (rawPassword.equals(user.getPasswordHash())) {
+			user.setPasswordHash(passwordEncoder.encode(rawPassword));
+			userRepository.save(user);
+			return;
+		}
+
+		throw new BadCredentialsException("Invalid email or password");
 	}
 
 	private String primaryRole(User user) {

@@ -5,17 +5,15 @@ import java.util.Set;
 
 import com.example.farmkart.constants.Role;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,8 +34,11 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private String passwordHash;
 
-	@Column
+	@Column(name = "profile_image")
 	private String profileImageUrl;
+
+	@Column(nullable = false)
+	private String status = "ACTIVE";
 
 	@Column(nullable = false)
 	private boolean active = true;
@@ -45,12 +46,6 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role role = Role.CUSTOMER;
-
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-	@Enumerated(EnumType.STRING)
-	@Column(name = "role", nullable = false)
-	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private Set<Address> addresses = new HashSet<>();
@@ -60,4 +55,17 @@ public class User extends BaseEntity {
 
 	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 	private DeliveryProfile deliveryProfile;
+
+	public boolean isActive() {
+		return active && "ACTIVE".equalsIgnoreCase(status);
+	}
+
+	@Transient
+	public Set<Role> getRoles() {
+		return Set.of(role);
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.role = roles == null || roles.isEmpty() ? Role.CUSTOMER : roles.iterator().next();
+	}
 }

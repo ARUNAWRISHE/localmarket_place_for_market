@@ -10,8 +10,10 @@ export default function Navbar() {
             <Leaf size={20} />
           </span>
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">GreenGrocer</p>
-            <p className="font-literata text-lg text-primary font-semibold">Premium Organic</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Farm2Kart</p>
+            <p className="font-literata text-lg text-primary font-semibold">
+              Farm Fresh from Tamil Nadu to Your Home
+            </p>
           </div>
         </Link>
 
@@ -20,7 +22,7 @@ export default function Navbar() {
             <Search size={18} className="text-on-surface-variant" />
             <input
               className="bg-transparent outline-none text-sm flex-1"
-              placeholder="Search fresh produce, pantry, dairy..."
+              placeholder="Search Tamil Nadu farm produce..."
             />
           </div>
         </div>
@@ -30,7 +32,8 @@ export default function Navbar() {
             { to: '/', label: 'Home' },
             { to: '/shop', label: 'Shop' },
             { to: '/categories', label: 'Categories' },
-            { to: '/tracking', label: 'Tracking' },
+            { to: '/orders', label: 'Orders' },
+            { to: '/profile', label: 'Profile' },
           ].map((item) => (
             <NavLink
               key={item.to}

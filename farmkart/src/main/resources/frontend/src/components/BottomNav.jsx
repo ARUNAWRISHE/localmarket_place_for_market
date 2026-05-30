@@ -1,10 +1,10 @@
-import { Home, LayoutGrid, ShoppingCart, User } from 'lucide-react'
+import { Home, LayoutGrid, User, PackageCheck } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const items = [
   { to: '/', label: 'Home', icon: Home },
   { to: '/shop', label: 'Shop', icon: LayoutGrid },
-  { to: '/cart', label: 'Cart', icon: ShoppingCart },
+  { to: '/orders', label: 'Orders', icon: PackageCheck },
   { to: '/profile', label: 'Profile', icon: User },
 ]
 

@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { Bell, Map, Navigation, Shield, ToggleLeft } from 'lucide-react'
+import { Bell, Clock3, Map, Navigation, Shield, ToggleLeft } from 'lucide-react'
 import Sidebar from '../components/Sidebar.jsx'
 
 const items = [
@@ -9,6 +9,7 @@ const items = [
   { to: '/delivery/status', label: 'Status', icon: <Navigation size={18} /> },
   { to: '/delivery/availability', label: 'Availability', icon: <ToggleLeft size={18} /> },
   { to: '/delivery/notifications', label: 'Notifications', icon: <Bell size={18} /> },
+  { to: '/delivery/history', label: 'History', icon: <Clock3 size={18} /> },
 ]
 
 export default function DeliveryLayout() {

@@ -57,6 +57,11 @@ export default function Login() {
           Create account
         </Link>
       </p>
+      <p className="text-sm text-on-surface-variant mt-2">
+        <Link to="/auth/forgot-password" className="text-primary font-semibold">
+          Forgot password?
+        </Link>
+      </p>
     </div>
   )
 }

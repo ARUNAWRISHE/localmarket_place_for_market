@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { Boxes, LayoutGrid, MessageSquare, Settings, ShoppingCart, Wallet } from 'lucide-react'
+import { BarChart3, Boxes, Flower2, LayoutGrid, MessageSquare, Settings, ShoppingCart, Wallet } from 'lucide-react'
 import Sidebar from '../components/Sidebar.jsx'
 
 const items = [
@@ -9,6 +9,8 @@ const items = [
   { to: '/seller/orders', label: 'Orders', icon: <ShoppingCart size={18} /> },
   { to: '/seller/revenue', label: 'Revenue', icon: <Wallet size={18} /> },
   { to: '/seller/messages', label: 'Messages', icon: <MessageSquare size={18} /> },
+  { to: '/seller/farm-profile', label: 'Farm Profile', icon: <Flower2 size={18} /> },
+  { to: '/seller/analytics', label: 'Analytics', icon: <BarChart3 size={18} /> },
   { to: '/seller/profile', label: 'Settings', icon: <Settings size={18} /> },
 ]
 

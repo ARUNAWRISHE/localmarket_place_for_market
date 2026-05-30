@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { ChartPie, CheckCircle2, ShieldAlert, Users } from 'lucide-react'
+import { ChartPie, CheckCircle2, ReceiptText, ShieldAlert, Users } from 'lucide-react'
 import Sidebar from '../components/Sidebar.jsx'
 
 const items = [
@@ -9,6 +9,8 @@ const items = [
   { to: '/admin/products', label: 'Products', icon: <ShieldAlert size={18} /> },
   { to: '/admin/orders', label: 'Orders', icon: <ShieldAlert size={18} /> },
   { to: '/admin/analytics', label: 'Dashboards', icon: <ChartPie size={18} /> },
+  { to: '/admin/support', label: 'Support', icon: <ReceiptText size={18} /> },
+  { to: '/admin/refunds', label: 'Refunds', icon: <ReceiptText size={18} /> },
 ]
 
 export default function AdminLayout() {

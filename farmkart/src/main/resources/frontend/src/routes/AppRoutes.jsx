@@ -11,6 +11,7 @@ import ToastContainer from '../components/ToastContainer.jsx'
 
 import Login from '../pages/auth/Login.jsx'
 import Register from '../pages/auth/Register.jsx'
+import ForgotPassword from '../pages/auth/ForgotPassword.jsx'
 import CustomerHome from '../pages/customer/Home.jsx'
 import Shop from '../pages/customer/Shop.jsx'
 import Categories from '../pages/customer/Categories.jsx'
@@ -22,6 +23,7 @@ import Orders from '../pages/customer/Orders.jsx'
 import Profile from '../pages/customer/Profile.jsx'
 import Wishlist from '../pages/customer/Wishlist.jsx'
 import DeliveryTracking from '../pages/customer/DeliveryTracking.jsx'
+import CustomerSupport from '../pages/customer/SupportPage.jsx'
 
 import SellerDashboard from '../pages/seller/Dashboard.jsx'
 import SellerProducts from '../pages/seller/ProductManagement.jsx'
@@ -30,6 +32,8 @@ import SellerOrders from '../pages/seller/Orders.jsx'
 import SellerRevenue from '../pages/seller/Revenue.jsx'
 import SellerMessages from '../pages/seller/Messages.jsx'
 import SellerProfileSettings from '../pages/seller/ProfileSettings.jsx'
+import SellerFarmProfile from '../pages/seller/FarmProfilePage.jsx'
+import SellerAnalytics from '../pages/seller/AnalyticsPage.jsx'
 
 import DeliveryActive from '../pages/delivery/ActiveDeliveries.jsx'
 import DeliveryRouteDetails from '../pages/delivery/RouteDetails.jsx'
@@ -37,12 +41,15 @@ import DeliveryEarnings from '../pages/delivery/Earnings.jsx'
 import DeliveryStatus from '../pages/delivery/DeliveryStatus.jsx'
 import DeliveryAvailability from '../pages/delivery/Availability.jsx'
 import DeliveryNotifications from '../pages/delivery/Notifications.jsx'
+import DeliveryHistory from '../pages/delivery/HistoryPage.jsx'
 
 import AdminUsers from '../pages/admin/UserManagement.jsx'
 import AdminSellers from '../pages/admin/SellerVerification.jsx'
 import AdminProducts from '../pages/admin/ProductMonitoring.jsx'
 import AdminOrders from '../pages/admin/OrderMonitoring.jsx'
 import AdminAnalytics from '../pages/admin/Analytics.jsx'
+import AdminSupport from '../pages/admin/SupportPage.jsx'
+import AdminRefunds from '../pages/admin/RefundsPage.jsx'
 
 import NotFound from '../pages/shared/NotFound.jsx'
 import Unauthorized from '../pages/shared/Unauthorized.jsx'
@@ -111,7 +118,17 @@ export default function AppRoutes() {
         <Route element={<AuthLayout />}>
           <Route path="auth/login" element={<Login />} />
           <Route path="auth/register" element={<Register />} />
+          <Route path="auth/forgot-password" element={<ForgotPassword />} />
         </Route>
+
+        <Route
+          path="support"
+          element={
+            <ProtectedRoute>
+              <CustomerSupport />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="seller/*"
@@ -130,6 +147,8 @@ export default function AppRoutes() {
           <Route path="revenue" element={<SellerRevenue />} />
           <Route path="messages" element={<SellerMessages />} />
           <Route path="profile" element={<SellerProfileSettings />} />
+          <Route path="farm-profile" element={<SellerFarmProfile />} />
+          <Route path="analytics" element={<SellerAnalytics />} />
         </Route>
 
         <Route
@@ -148,6 +167,7 @@ export default function AppRoutes() {
           <Route path="status" element={<DeliveryStatus />} />
           <Route path="availability" element={<DeliveryAvailability />} />
           <Route path="notifications" element={<DeliveryNotifications />} />
+          <Route path="history" element={<DeliveryHistory />} />
         </Route>
 
         <Route
@@ -166,6 +186,8 @@ export default function AppRoutes() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="support" element={<AdminSupport />} />
+          <Route path="refunds" element={<AdminRefunds />} />
         </Route>
 
         <Route path="unauthorized" element={<Unauthorized />} />

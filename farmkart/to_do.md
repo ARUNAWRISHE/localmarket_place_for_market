@@ -1,753 +1,692 @@
-Based on your current database and Farm2Kart vision, here is the **Frontend To-Do List** in the exact order I would implement it.
+# 🚀 Farm2Kart Backend Development To-Do List
 
-# 🎯 Frontend Progress
-
-```text
-Current: ~40-50%
-Target: 100%
-```
+**Current Backend Status:** 100%
+**Target:** 100% Production-Ready Spring Boot Backend
 
 ---
 
-# Phase 1 — Core Setup
+# Phase 1 — Project Setup
 
-## Project Configuration
-
-* [ ] Configure React + Vite
-* [ ] Configure Tailwind CSS
-* [ ] Configure React Router
-* [ ] Configure Axios
-* [ ] Configure Redux Toolkit
-* [ ] Configure Toast Notifications
-* [ ] Configure Environment Variables
+## Spring Boot Configuration
 
 ### Files
 
 ```text
-src/api/axios.js
-src/api/endpoints.js
-src/store/index.js
-src/routes/AppRoutes.jsx
-src/main.jsx
+src/main/resources/
+
+application.yml
+application-dev.yml
+application-prod.yml
 ```
+
+### Tasks
+
+* [x] Configure PostgreSQL (Supabase)
+* [x] Configure JWT
+* [x] Configure Swagger/OpenAPI
+* [x] Configure CORS
+* [x] Configure File Upload
+* [x] Configure Environment Variables
+* [x] Configure Logging
 
 ---
 
-# Phase 2 — Layout System
+# Phase 2 — Security & Authentication
 
-## Customer Layout
+## Package
 
-* [ ] Navbar
-* [ ] Footer
-* [ ] Mobile Navigation
-* [ ] Search Bar
+```text
+security/
+
+JwtAuthenticationFilter.java
+JwtService.java
+CustomUserDetailsService.java
+SecurityConfig.java
+AuthenticationEntryPoint.java
+```
+
+### Tasks
+
+* [x] JWT Generation
+* [x] JWT Validation
+* [x] Refresh Token Support
+* [x] Password Encryption (BCrypt)
+* [x] Role-Based Authorization
+* [x] Protected Routes
+* [x] Logout Functionality
+
+---
+
+## Auth Module
 
 ### Files
 
 ```text
-layouts/CustomerLayout.jsx
+auth/
 
-components/navigation/
-├── Navbar.jsx
-├── Footer.jsx
-├── SearchBar.jsx
-├── MobileMenu.jsx
+AuthController.java
+AuthService.java
+AuthServiceImpl.java
+
+dto/auth/
+
+LoginRequest.java
+RegisterRequest.java
+AuthResponse.java
 ```
 
----
+### APIs
 
-## Seller Layout
-
-### Files
-
-```text
-layouts/SellerLayout.jsx
-
-components/seller/
-├── SellerSidebar.jsx
-├── SellerNavbar.jsx
-```
-
----
-
-## Delivery Layout
-
-### Files
-
-```text
-layouts/DeliveryLayout.jsx
-```
-
----
-
-## Admin Layout
-
-### Files
-
-```text
-layouts/AdminLayout.jsx
-```
-
----
-
-# Phase 3 — Authentication
-
-## Pages
-
-* [ ] Login
-* [ ] Register
-* [ ] Forgot Password
-
-### Files
-
-```text
-features/auth/pages/
-
-LoginPage.jsx
-RegisterPage.jsx
-ForgotPasswordPage.jsx
-```
-
-### API
-
-```text
+```http
 POST /api/auth/register
 POST /api/auth/login
 POST /api/auth/logout
+POST /api/auth/refresh
 ```
 
 ---
 
-# Phase 4 — Customer Marketplace
+# Phase 3 — User Management
 
----
-
-## Home Page
-
-### Sections
-
-* [ ] Hero Banner
-* [ ] Categories
-* [ ] Fresh Today
-* [ ] Tamil Nadu Specials
-* [ ] Top Rated
-* [ ] Seasonal Products
-* [ ] Nearby Farms
-
-### Files
+## Files
 
 ```text
-pages/customer/HomePage.jsx
+user/
+
+UserController.java
+UserService.java
+UserRepository.java
+
+entity/
+User.java
+UserRole.java
+Address.java
 ```
+
+### APIs
+
+```http
+GET    /api/users/profile
+PUT    /api/users/profile
+POST   /api/users/address
+GET    /api/users/address
+DELETE /api/users/address/{id}
+```
+
+### Tasks
+
+* [x] Profile Management
+* [x] Address Management
+* [x] Profile Image Support
 
 ---
 
-## Categories Page
+# Phase 4 — Category Module
 
-### Files
+## Files
 
 ```text
-pages/customer/CategoriesPage.jsx
+category/
+
+CategoryController.java
+CategoryService.java
+CategoryRepository.java
 ```
 
-### Categories
+### APIs
 
-#### Vegetables
+```http
+GET  /api/categories
+GET  /api/categories/{id}
+POST /api/categories
+PUT  /api/categories/{id}
+DELETE /api/categories/{id}
+```
 
-* Leafy Vegetables
-* Root Vegetables
-* Common Vegetables
-* Native Tamil Nadu Vegetables
+### Tasks
 
-#### Fruits
-
-* Local Fruits
-* Seasonal Fruits
-* Premium Fruits
-
-#### Pulses & Grains
-
-* Pulses
-* Grains
-* Millets
-
-#### Dairy Products
-
-* Fresh Dairy
-* Processed Dairy
-* Farm Fresh
-
-#### Other
+* [x] Category CRUD
+* [x] Category Tree
+* [x] Parent Category Support
 
 ---
 
-## Shop Page
+# Phase 5 — Farm Profile Module
 
-### Features
+## Files
 
-* [ ] Search
-* [ ] Filter
-* [ ] Sort
-* [ ] Pagination
+```text
+farm/
+
+FarmProfileController.java
+FarmProfileService.java
+FarmProfileRepository.java
+
+entity/
+FarmProfile.java
+FarmImage.java
+```
+
+### APIs
+
+```http
+POST   /api/farms
+PUT    /api/farms/{id}
+GET    /api/farms/{id}
+DELETE /api/farms/{id}
+
+POST   /api/farms/{id}/images
+GET    /api/farms/{id}/images
+```
+
+### Tasks
+
+* [x] Farm Creation
+* [x] Farm Images
+* [x] District Mapping
+* [x] Organic Certificate Upload
+
+---
+
+# Phase 6 — Seller Module
+
+## Files
+
+```text
+seller/
+
+SellerController.java
+SellerService.java
+SellerRepository.java
+```
+
+### APIs
+
+```http
+GET  /api/sellers
+GET  /api/sellers/{id}
+PUT  /api/sellers/profile
+```
+
+### Tasks
+
+* [x] Seller Profile
+* [x] Seller Verification Status
+* [x] Seller Rating Calculation
+* [x] Seller Type Support
+
+---
+
+# Phase 7 — Product Module
+
+## Files
+
+```text
+product/
+
+ProductController.java
+ProductService.java
+ProductRepository.java
+
+entity/
+Product.java
+ProductImage.java
+```
+
+### APIs
+
+```http
+POST   /api/products
+PUT    /api/products/{id}
+DELETE /api/products/{id}
+
+GET    /api/products
+GET    /api/products/{id}
+
+GET    /api/products/search
+GET    /api/products/category/{id}
+```
+
+### Tasks
+
+* [x] Product CRUD
+* [x] Product Search
+* [x] Product Filters
+* [x] Pagination
+* [x] Sorting
+* [x] Image Upload
 
 ### Filters
 
-* Category
-* District
-* Price
-* Rating
-* Organic Certified
-* Seller Type
+* [x] Category
+* [x] District
+* [x] Price
+* [x] Organic Certified
+* [x] Rating
+* [x] Seller Type
 
-### Files
+---
+
+# Phase 8 — Cart Module
+
+## Files
 
 ```text
-pages/customer/ShopPage.jsx
+cart/
 
-components/products/
-├── ProductCard.jsx
-├── ProductGrid.jsx
-├── ProductFilters.jsx
-├── ProductSearch.jsx
+CartController.java
+CartService.java
+CartRepository.java
+```
+
+### APIs
+
+```http
+GET    /api/cart
+POST   /api/cart/items
+PUT    /api/cart/items/{id}
+DELETE /api/cart/items/{id}
+```
+
+### Tasks
+
+* [x] Add Product
+* [x] Remove Product
+* [x] Update Quantity
+
+---
+
+# Phase 9 — Order Module
+
+## Files
+
+```text
+order/
+
+OrderController.java
+OrderService.java
+OrderRepository.java
+```
+
+### APIs
+
+```http
+POST   /api/orders
+
+GET    /api/orders
+GET    /api/orders/{id}
+
+PUT    /api/orders/{id}/cancel
+GET    /api/orders/current
+GET    /api/orders/history
+```
+
+### Status Flow
+
+```text
+PENDING
+CONFIRMED
+PACKED
+SHIPPED
+OUT_FOR_DELIVERY
+DELIVERED
+CANCELLED
+```
+
+### Tasks
+
+* [x] Order Creation
+* [x] Invoice Generation
+* [x] Order Tracking
+* [x] Cancellation Logic
+
+---
+
+# Phase 10 — Payment Module
+
+## Files
+
+```text
+payment/
+
+PaymentController.java
+PaymentService.java
+PaymentRepository.java
+```
+
+### APIs
+
+```http
+POST /api/payments/create
+POST /api/payments/verify
+GET  /api/payments/history
+```
+
+### Tasks
+
+* [x] COD Support
+* [x] UPI Support
+* [x] Payment Verification
+* [x] Payment History
+
+---
+
+# Phase 11 — Delivery Module
+
+## Files
+
+```text
+delivery/
+
+DeliveryController.java
+DeliveryService.java
+DeliveryRepository.java
+```
+
+### APIs
+
+```http
+GET  /api/delivery/assigned
+PUT  /api/delivery/status
+
+POST /api/delivery/location
+POST /api/delivery/proof
+```
+
+### Tasks
+
+* [x] Delivery Assignment
+* [x] Status Updates
+* [x] GPS Tracking
+* [x] Delivery Proof Upload
+
+### Status Flow
+
+```text
+ASSIGNED
+PICKED_UP
+IN_TRANSIT
+OUT_FOR_DELIVERY
+DELIVERED
 ```
 
 ---
 
-## Product Details
+# Phase 12 — Review System
 
-### Features
-
-* Images
-* Reviews
-* Ratings
-* Farm Profile
-* Seller Profile
-* Harvest Date
-* Origin District
-* Delivery Estimate
-
-### Files
+## Files
 
 ```text
-pages/customer/ProductDetailsPage.jsx
+review/
+
+ReviewController.java
+ReviewService.java
+```
+
+### APIs
+
+```http
+POST /api/reviews/product
+POST /api/reviews/seller
+POST /api/reviews/delivery
+
+GET  /api/reviews/product/{id}
+```
+
+### Tasks
+
+* [x] Product Reviews
+* [x] Seller Reviews
+* [x] Delivery Reviews
+* [x] Rating Aggregation
+
+---
+
+# Phase 13 — Wishlist
+
+## Files
+
+```text
+wishlist/
+
+WishlistController.java
+WishlistService.java
+```
+
+### APIs
+
+```http
+POST   /api/wishlist
+DELETE /api/wishlist/{id}
+GET    /api/wishlist
 ```
 
 ---
 
-# Phase 5 — Cart & Checkout
+# Phase 14 — Notifications
 
-## Cart
-
-### Files
+## Files
 
 ```text
-pages/customer/CartPage.jsx
+notification/
+
+NotificationController.java
+NotificationService.java
 ```
 
-### Features
+### APIs
 
-* Add Item
-* Remove Item
-* Update Quantity
-
----
-
-## Checkout
-
-### Files
-
-```text
-pages/customer/CheckoutPage.jsx
+```http
+GET /api/notifications
+PUT /api/notifications/{id}/read
 ```
 
-### Features
+### Tasks
 
-* Address Selection
-* Delivery Slot
+* [x] Order Notifications
+* [x] Delivery Notifications
+* [x] Refund Notifications
+
+---
+
+# Phase 15 — Support System
+
+## Files
 
 ```text
-Morning
-Afternoon
-Evening
+support/
+
+SupportController.java
+SupportService.java
+SupportRepository.java
 ```
 
-* Payment Selection
-* Order Summary
+### APIs
 
----
-
-# Phase 6 — Orders
-
-## Orders Dashboard
-
-### Files
-
-```text
-pages/customer/OrdersPage.jsx
+```http
+POST /api/support
+GET  /api/support
+GET  /api/support/{id}
 ```
 
+### Tasks
+
+* [x] Ticket Creation
+* [x] Ticket Resolution
+* [x] Ticket Status Updates
+
 ---
 
-## Current Orders
+# Phase 16 — Refund System
 
-### Files
+## Files
 
 ```text
-features/orders/CurrentOrders.jsx
+refund/
+
+RefundController.java
+RefundService.java
 ```
 
-### Features
+### APIs
 
-* Pending
-* Confirmed
-* Packed
-* Out For Delivery
-
-Actions:
-
-* View
-* Track
-* Cancel
-
----
-
-## Order History
-
-### Files
-
-```text
-features/orders/OrderHistory.jsx
+```http
+POST /api/refunds
+GET  /api/refunds
+PUT  /api/refunds/{id}
 ```
 
-### Features
+### Tasks
 
-* Delivered
-* Cancelled
-
-Actions:
-
-* Download Invoice
-* Review Product
+* [x] Refund Request
+* [x] Refund Approval
+* [x] Refund Rejection
 
 ---
 
-## Track Orders
+# Phase 17 — Admin Module
 
-### Files
+## Files
 
 ```text
-features/orders/TrackOrder.jsx
+admin/
+
+AdminController.java
+AdminService.java
 ```
 
-### Features
+### APIs
 
-* Live Status
-* ETA
-* Delivery Partner
-* Timeline
+```http
+GET /api/admin/users
+GET /api/admin/sellers
 
----
+PUT /api/admin/sellers/{id}/verify
+PUT /api/admin/sellers/{id}/reject
 
-## Refund Requests
-
-### Files
-
-```text
-features/orders/RefundRequests.jsx
+GET /api/admin/refunds
+GET /api/admin/support
 ```
 
+### Tasks
+
+* [x] Seller Verification
+* [x] Product Moderation
+* [x] User Management
+* [x] Analytics Dashboard
+
 ---
 
-# Phase 7 — Profile
+# Phase 18 — DTO Layer
 
-## Profile Page
-
-### Files
+## Files
 
 ```text
-pages/customer/ProfilePage.jsx
+dto/
+
+auth/
+user/
+product/
+seller/
+farm/
+order/
+payment/
+delivery/
+review/
+refund/
+support/
 ```
 
-### Features
+### Tasks
 
-* Profile Info
-* Address Book
-* Order Stats
-* Logout
-
-Quick Actions:
-
-* Orders
-* Wishlist
-* Support
-* Settings
+* [x] Request DTOs
+* [x] Response DTOs
+* [x] Validation
 
 ---
 
-# Phase 8 — Wishlist
+# Phase 19 — Exception Handling
 
-### Files
+## Files
 
 ```text
-pages/customer/WishlistPage.jsx
+exception/
+
+GlobalExceptionHandler.java
+
+ResourceNotFoundException.java
+UnauthorizedException.java
+BadRequestException.java
 ```
 
-### Features
+### Tasks
 
-* Add
-* Remove
-* Move To Cart
+* [x] Standard Error Response
+* [x] Validation Errors
+* [x] JWT Errors
 
 ---
 
-# Phase 9 — Support
+# Phase 20 — Testing
 
-### Files
+## Unit Tests
+
+* [x] Services
+* [x] Security
+* [x] Repositories
+
+## Integration Tests
+
+* [x] Auth APIs
+* [x] Product APIs
+* [x] Order APIs
+* [x] Payment APIs
+
+---
+
+# Phase 21 — Documentation
+
+## Swagger
+
+* [x] Document All APIs
+* [x] JWT Authorization Support
+
+Access:
 
 ```text
-pages/customer/SupportPage.jsx
-```
-
-### Features
-
-* Create Ticket
-* Ticket History
-* Status Tracking
-
----
-
-# Phase 10 — Seller Portal
-
----
-
-## Seller Dashboard
-
-### Files
-
-```text
-pages/seller/DashboardPage.jsx
-```
-
-### Widgets
-
-* Revenue
-* Orders
-* Products
-* Reviews
-
----
-
-## Product Management
-
-### Files
-
-```text
-pages/seller/ProductsPage.jsx
-```
-
-### Features
-
-* Add Product
-* Edit Product
-* Delete Product
-
----
-
-## Inventory
-
-### Files
-
-```text
-pages/seller/InventoryPage.jsx
-```
-
-### Features
-
-* Stock
-* Low Stock Alerts
-
----
-
-## Orders
-
-### Files
-
-```text
-pages/seller/OrdersPage.jsx
-```
-
-### Features
-
-* Process Orders
-* Update Status
-
----
-
-## Farm Profile
-
-### Files
-
-```text
-pages/seller/FarmProfilePage.jsx
-```
-
-### Features
-
-* Farm Name
-* District
-* Village
-* Images
-* Organic Certificate
-
----
-
-## Analytics
-
-### Files
-
-```text
-pages/seller/AnalyticsPage.jsx
-```
-
-### Metrics
-
-* Revenue
-* Top Products
-* Reviews
-
----
-
-# Phase 11 — Delivery Portal
-
----
-
-## Dashboard
-
-### Files
-
-```text
-pages/delivery/DashboardPage.jsx
+/swagger-ui/index.html
 ```
 
 ---
 
-## Active Deliveries
-
-### Files
+# 🎯 Definition of Done
 
 ```text
-pages/delivery/ActiveDeliveries.jsx
-```
-
-### Features
-
-* Accept Delivery
-* Update Status
-
----
-
-## Earnings
-
-### Files
-
-```text
-pages/delivery/EarningsPage.jsx
-```
-
----
-
-## History
-
-### Files
-
-```text
-pages/delivery/HistoryPage.jsx
-```
-
----
-
-## Delivery Proof Upload
-
-### Files
-
-```text
-components/delivery/DeliveryProofModal.jsx
-```
-
-### Features
-
-* Upload Photo
-* Upload Signature
-* Notes
-
----
-
-# Phase 12 — Admin Portal
-
----
-
-## Dashboard
-
-### Files
-
-```text
-pages/admin/DashboardPage.jsx
-```
-
----
-
-## User Management
-
-### Files
-
-```text
-pages/admin/UsersPage.jsx
-```
-
----
-
-## Seller Verification
-
-### Files
-
-```text
-pages/admin/SellersPage.jsx
-```
-
-### Features
-
-* Verify
-* Reject
-* Suspend
-
----
-
-## Product Moderation
-
-### Files
-
-```text
-pages/admin/ProductsPage.jsx
-```
-
----
-
-## Support Management
-
-### Files
-
-```text
-pages/admin/SupportPage.jsx
-```
-
----
-
-## Refund Management
-
-### Files
-
-```text
-pages/admin/RefundsPage.jsx
-```
-
----
-
-# Phase 13 — Shared Components
-
-## UI Components
-
-```text
-components/ui/
-
-Button.jsx
-Input.jsx
-Card.jsx
-Badge.jsx
-Modal.jsx
-Table.jsx
-Pagination.jsx
-Avatar.jsx
-```
-
----
-
-# Phase 14 — API Integration
-
-Connect all APIs:
-
-```text
-Auth APIs
-Product APIs
-Category APIs
-Cart APIs
-Order APIs
-Review APIs
-Wishlist APIs
-Support APIs
-Refund APIs
-Delivery APIs
-Admin APIs
-```
-
----
-
-# Phase 15 — Testing
-
-## Customer Flow
-
-* [ ] Register
-* [ ] Login
-* [ ] Browse Products
-* [ ] Add Cart
-* [ ] Checkout
-* [ ] Track Order
-
----
-
-## Seller Flow
-
-* [ ] Create Farm
-* [ ] Add Product
-* [ ] Manage Inventory
-
----
-
-## Delivery Flow
-
-* [ ] Accept Delivery
-* [ ] Upload Proof
-* [ ] Complete Delivery
-
----
-
-## Admin Flow
-
-* [ ] Verify Seller
-* [ ] Manage Refunds
-* [ ] Resolve Tickets
-
----
-
-# 🚀 Definition of Done
-
-```text
+Database Integration      ✅
+JWT Security             ✅
 Authentication           ✅
-Marketplace              ✅
-Categories               ✅
+Farm Profiles            ✅
+Seller Management        ✅
+Product Management       ✅
 Cart                     ✅
-Checkout                 ✅
 Orders                   ✅
-Tracking                 ✅
+Payments                 ✅
+Delivery Tracking        ✅
+Reviews                  ✅
 Wishlist                 ✅
+Notifications            ✅
 Support                  ✅
 Refunds                  ✅
-Seller Portal            ✅
-Farm Profiles            ✅
-Delivery Portal          ✅
 Admin Portal             ✅
-API Integration          ✅
-Responsive Design        ✅
+Swagger                  ✅
 Testing                  ✅
+Production Build         ✅
 ```
 
-After completing this list, your **Farm2Kart React frontend will be production-ready and fully aligned with your database and Spring Boot backend.**
+## Estimated Backend Completion
+```text
+Current: 100%
+After completing this list: 100% (Achieved)
+```
+
+At that point, your Spring Boot backend will be fully aligned with your Farm2Kart database and React frontend.

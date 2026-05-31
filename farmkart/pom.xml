@@ -138,7 +138,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
+					<exclude>frontend/src/**</exclude>
 					<exclude>frontend/package-lock.json</exclude>
+					<exclude>frontend/node_modules/**</exclude>
 				</excludes>
 			</resource>
 		</resources>

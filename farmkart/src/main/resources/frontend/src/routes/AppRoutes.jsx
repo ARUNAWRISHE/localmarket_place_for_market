@@ -35,6 +35,7 @@ import SellerProfileSettings from '../pages/seller/ProfileSettings.jsx'
 import SellerFarmProfile from '../pages/seller/FarmProfilePage.jsx'
 import SellerAnalytics from '../pages/seller/AnalyticsPage.jsx'
 
+import DeliveryDashboard from '../pages/delivery/DashboardPage.jsx'
 import DeliveryActive from '../pages/delivery/ActiveDeliveries.jsx'
 import DeliveryRouteDetails from '../pages/delivery/RouteDetails.jsx'
 import DeliveryEarnings from '../pages/delivery/Earnings.jsx'
@@ -43,11 +44,11 @@ import DeliveryAvailability from '../pages/delivery/Availability.jsx'
 import DeliveryNotifications from '../pages/delivery/Notifications.jsx'
 import DeliveryHistory from '../pages/delivery/HistoryPage.jsx'
 
+import AdminDashboard from '../pages/admin/DashboardPage.jsx'
 import AdminUsers from '../pages/admin/UserManagement.jsx'
 import AdminSellers from '../pages/admin/SellerVerification.jsx'
 import AdminProducts from '../pages/admin/ProductMonitoring.jsx'
 import AdminOrders from '../pages/admin/OrderMonitoring.jsx'
-import AdminAnalytics from '../pages/admin/Analytics.jsx'
 import AdminSupport from '../pages/admin/SupportPage.jsx'
 import AdminRefunds from '../pages/admin/RefundsPage.jsx'
 
@@ -113,6 +114,14 @@ export default function AppRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="support"
+            element={
+              <ProtectedRoute>
+                <CustomerSupport />
+              </ProtectedRoute>
+            }
+          />
         </Route>
 
         <Route element={<AuthLayout />}>
@@ -120,15 +129,6 @@ export default function AppRoutes() {
           <Route path="auth/register" element={<Register />} />
           <Route path="auth/forgot-password" element={<ForgotPassword />} />
         </Route>
-
-        <Route
-          path="support"
-          element={
-            <ProtectedRoute>
-              <CustomerSupport />
-            </ProtectedRoute>
-          }
-        />
 
         <Route
           path="seller/*"
@@ -161,7 +161,8 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<DeliveryActive />} />
+          <Route index element={<DeliveryDashboard />} />
+          <Route path="active" element={<DeliveryActive />} />
           <Route path="routes" element={<DeliveryRouteDetails />} />
           <Route path="earnings" element={<DeliveryEarnings />} />
           <Route path="status" element={<DeliveryStatus />} />
@@ -180,12 +181,11 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<AdminAnalytics />} />
+          <Route index element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="sellers" element={<AdminSellers />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="support" element={<AdminSupport />} />
           <Route path="refunds" element={<AdminRefunds />} />
         </Route>

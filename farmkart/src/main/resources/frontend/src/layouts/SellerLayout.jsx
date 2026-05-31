@@ -7,11 +7,8 @@ const items = [
   { to: '/seller/products', label: 'Products', icon: <Boxes size={18} /> },
   { to: '/seller/inventory', label: 'Inventory', icon: <ShoppingCart size={18} /> },
   { to: '/seller/orders', label: 'Orders', icon: <ShoppingCart size={18} /> },
-  { to: '/seller/revenue', label: 'Revenue', icon: <Wallet size={18} /> },
-  { to: '/seller/messages', label: 'Messages', icon: <MessageSquare size={18} /> },
   { to: '/seller/farm-profile', label: 'Farm Profile', icon: <Flower2 size={18} /> },
   { to: '/seller/analytics', label: 'Analytics', icon: <BarChart3 size={18} /> },
-  { to: '/seller/profile', label: 'Settings', icon: <Settings size={18} /> },
 ]
 
 export default function SellerLayout() {

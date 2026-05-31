@@ -33,6 +33,7 @@ export default function Navbar() {
             { to: '/shop', label: 'Shop' },
             { to: '/categories', label: 'Categories' },
             { to: '/orders', label: 'Orders' },
+            { to: '/wishlist', label: 'Wishlist' },
             { to: '/profile', label: 'Profile' },
           ].map((item) => (
             <NavLink
